@@ -11,8 +11,8 @@
 }
 
 .header a {
-    padding-right: 30px;
-    color: blue;
+  padding-right: 30px;
+  color: blue;
 }
 
 .content img {
@@ -20,6 +20,7 @@
   height: auto;
 }
 
+
 .content ul {
-    list-style-type: none;
+  list-style-type: none;
 }
