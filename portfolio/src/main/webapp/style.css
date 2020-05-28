@@ -10,6 +10,16 @@
   padding: 20px 10px;
 }
 
-.header a{
+.header a {
     padding-right: 30px;
+    color: blue;
+}
+
+.content img {
+  max-width: 50%;
+  height: auto;
+}
+
+.content ul {
+    list-style-type: none;
 }
