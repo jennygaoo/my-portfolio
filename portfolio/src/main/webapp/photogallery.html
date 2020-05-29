@@ -8,54 +8,58 @@
   </head>
   <body>
     <div class="content">
-      <!-- navigation menu -->
-      <div class="header">
-        <a href="aboutme.html">about me</a>
-        <a href="photogallery.html">my photo gallery</a>
-        <a href="recipes.html">recipes i like</a>
-        <a href="https://github.com/jennygaoo">my github</a>
-        <a href="index.html">home page</a>
-      </div>
+      <div get-html="header.html"></div>
+      <script>includeHTML();</script>
       <h1>My Photo Gallery</h1>
+      <p>the videos may make you feel dizzy! feel free to pause them :)</p>
       <div class="row"> 
         <div class="column">
-           <img src="/images/gallery/sunset.jpg" alt="sunset"/>
-           <img src="/images/gallery/museum.jpg" alt="museum"/>
-        </div>
-        <div class="column">
           <img src="/images/gallery/coffee.jpeg" alt="coffee"/>
+           <video controls autoplay loop muted>
+             <source src="/video/trails.mp4" type="video/mp4">
+           </video>
+          <img src="/images/gallery/photo6.jpg" alt="concert"/>
+        </div>  
+        <div class="column">
+          <img src="/images/gallery/sunset.jpg" alt="sunset"/>
+          <img src="/images/gallery/museum.jpg" alt="museum"/>
           <img src="/images/gallery/photo2.png" alt="patrick"/> 
+        </div>
+        <div class="column"> 
+          <img src="/images/gallery/minc.jpg" alt="monsters inc"/>
+          <video controls autoplay loop muted>
+            <source src="/video/lilie.MP4" type="video/mp4">
+          </video>
+          <img src="/images/gallery/cellgroup.jpg" alt="cell group"/>
         </div>  
         <div class="column"> 
-          <img src="/images/gallery/photo4.jpg" alt="walking the dog"/>
-          <img src="/images/gallery/fall.png" alt="fall time"/>
-        </div>  
-        <div class="column">
-          <img src="/images/gallery/minc.jpg" alt="monsters inc"/>
-          <img src="/images/gallery/photo6.jpg" alt="concert"/>
-        </div>
-        <div class="column">
-          <img src="/images/gallery/cellgroup.jpg" alt="cell group"/>
           <img src="/images/gallery/walkpals.jpg" alt="on a walk"/>
+          <img src="/images/gallery/fall.png" alt="fall time"/>
+          <img src="/images/gallery/photo4.jpg" alt="walking the dog"/>
+        </div>
+        <div class="column"> 
+          <img src="/images/gallery/teatime.jpg" alt="tea time"/>
+          <video controls autoplay loop muted>
+            <source src="/video/library.mp4" type="video/mp4">
+          </video>
+          <img src="/images/gallery/pals.jpg" alt="pals"/>
+        </div>  
+        <div class="column"> 
+          <img src="/images/gallery/hanszen.jpg" alt="hanszen friends"/>
+          <img src="/images/gallery/dw.jpg" alt="dw"/>
+          <img src="/images/gallery/kermit.gif" alt="kermit dancing"/>
+        </div>
+        <div class="column"> 
+          <img src="/images/gallery/pinkflowers.jpg" alt="pink flowers"/>
+          <img src="/images/gallery/ffs.jpg" alt="fishie gorls"/>
+          <img src="/images/gallery/tokyo.jpg" alt="tokyo"/>
+        </div>
+        <div class="column"> 
+          <img src="/images/gallery/clownani.png" alt="clown"/>
+          <img src="/images/gallery/clouds.jpg" alt="clouds"/>
+          <img src="/images/gallery/heather.jpg" alt="heather"/>
         </div>
       </div>
-      <!-- <div class="grid-container"> 
-        <div class="grid-item ">
-          <img src="/images/gallery/sunset.jpg" alt="sunset"/>
-        </div>
-        <div class="grid-item ">
-          <img src="/images/gallery/coffee.jpeg" alt="coffee"/>
-        </div>
-        <div class="grid-item ">
-          <img src="/images/gallery/minc.jpg" alt="monsters inc"/>
-        </div>
-        <div class=grid-item>
-          <img src="/images/gallery/museum.jpg" alt="museum"/>
-          <img src="/images/gallery/photo2.png" alt="patrick"/>
-          <img src="/images/gallery/photo6.jpg" alt="concert"/>
-        </div> 
-      </div> -->
-
     </div>
   </body>
 </html>

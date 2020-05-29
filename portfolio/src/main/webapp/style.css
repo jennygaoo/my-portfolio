@@ -2,67 +2,19 @@
 @import url(https://fonts.googleapis.com/css?family=Bungee);
 
 .content {
-  margin-left: auto;
-  margin-right: auto;
-  width: 800px;
   font-family: monospace;
-}
-
-.header {
-  background-color: #f1f1f1;
-  padding: 20px 10px;
-}
-
-.header a {
-  padding-right: 30px;
-  color: blue;
-  font-family: 'Bungee',sans-serif;
-}
-
-/* .grid-container {
-  display: grid;
-  grid-template-columns: auto auto auto;
-  background-color: #2196F3;
-}
-
-.grid-item {
-  padding: 10px;
-  display: block;
-  border: 1px solid rgba(0, 0, 0, 0.8);
   margin-left: auto;
   margin-right: auto;
-}  */
+  width: 1020px;
+}
+
+.content a{
+  color: blue;
+}
 
 .content img {
-  max-width: 35%;
   height: auto;
-}
-
-/* .grid-item img {
-    max-width: 50%;
-    height: auto;
-} */
-
-.row {
-  display: -ms-flexbox;
-  display: flex;
-  margin: auto;
-  -ms-flex-wrap: wrap;
-  flex-wrap: wrap;
-  padding: 0 4px;
-}
-
-/* Create two equal columns that sit next to each other */
-.column {
-  -ms-flex: 50%;
-  flex: 50%;
-  padding: 0 4px;
-}
-
-.column img {
-  margin-top: 8px;
-  vertical-align: middle;
-  width: 100%;
+  max-width: 35%;
 }
 
 .content h1 {
@@ -73,6 +25,40 @@
   list-style-type: none;
 }
 
-.content a{
-    color: blue;
+.header {
+  background-color: #E6E6FA;
+  padding: 20px 10px;
 }
+
+.header a {
+  color: white;
+  font-family: 'Bungee',sans-serif;
+  padding-right: 30px;
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap; 
+  margin-left: 100px;
+  padding: 0 4px;
+}
+
+.column {
+  -ms-flex: 50%;
+  flex: 50%;
+  padding: 0 10px;
+}
+
+.column img {
+  margin-top: 8px;
+  max-width: 25%;
+  padding: 20px;
+  vertical-align: middle;
+} 
+
+.column video {
+  margin-top: 8px;
+  max-width: 25%;
+  padding: 20px;
+  vertical-align: middle;
+} 
