@@ -25,18 +25,15 @@ function randomizeRecipe() {
     const str = "ba's best chocolate chip cookies";
     const result = str.link("https://www.bonappetit.com/recipe/bas-best-chocolate-chip-cookies");
     document.getElementById("recipe-link").innerHTML = result;
-  }
-  else if(imageIndex === 2) {
+  } else if(imageIndex === 2) {
     const str = "queer eye's antoni's lemon squares";
     const result = str.link("https://beta.theloop.ca/food/recipes/salty-lemon-squares.html");
     document.getElementById("recipe-link").innerHTML = result;
-  }
-  else if(imageIndex === 3) {
+  } else if(imageIndex === 3) {
     const str = "pasta al limone";
     const result = str.link("https://www.bonappetit.com/recipe/pasta-al-limone"); 
     document.getElementById("recipe-link").innerHTML = result;
-  }
-  else if(imageIndex === 4) {
+  } else if(imageIndex === 4) {
     const str = "basque burnt cheesecake";
     const result = str.link("https://www.bonappetit.com/recipe/basque-burnt-cheesecake");
     document.getElementById("recipe-link").innerHTML = result;
