@@ -54,7 +54,7 @@
   max-width: 25%;
   padding: 20px;
   vertical-align: middle;
-} 
+}
 
 .column video {
   margin-top: 8px;
@@ -62,3 +62,7 @@
   padding: 20px;
   vertical-align: middle;
 } 
+
+#random-image-container img {
+  margin-top: 20px;
+}
