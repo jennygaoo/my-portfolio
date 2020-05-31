@@ -37,7 +37,7 @@ function randomizeRecipe() {
     const str = "basque burnt cheesecake";
     const result = str.link("https://www.bonappetit.com/recipe/basque-burnt-cheesecake");
     document.getElementById("recipe-link").innerHTML = result;
-  }
+  } 
 
   imageContainer.innerHTML = '';
   imageContainer.appendChild(imgElement);
