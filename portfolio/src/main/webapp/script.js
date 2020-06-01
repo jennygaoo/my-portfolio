@@ -12,17 +12,33 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/**
- * Adds a random greeting to the page.
- */
-function addRandomGreeting() {
-  const greetings =
-      ['Hello world!', '¡Hola Mundo!', '你好，世界！', 'Bonjour le monde!'];
+function randomizeRecipe() {
+  // there are 4 recipes total
+  const imageIndex = Math.floor(Math.random() * 4) + 1;
+  const imgPath = "/images/recipes/" + imageIndex + ".jpg";
 
-  // Pick a random greeting.
-  const greeting = greetings[Math.floor(Math.random() * greetings.length)];
+  const imgElement = document.createElement("img");
+  imgElement.src = imgPath;
+  const imageContainer = document.getElementById("random-image-container");
 
-  // Add it to the page.
-  const greetingContainer = document.getElementById('greeting-container');
-  greetingContainer.innerText = greeting;
+  if (imageIndex === 1) {
+    const str = "ba's best chocolate chip cookies";
+    const result = str.link("https://www.bonappetit.com/recipe/bas-best-chocolate-chip-cookies");
+    document.getElementById("recipe-link").innerHTML = result;
+  } else if (imageIndex === 2) {
+    const str = "queer eye's antoni's lemon squares";
+    const result = str.link("https://beta.theloop.ca/food/recipes/salty-lemon-squares.html");
+    document.getElementById("recipe-link").innerHTML = result;
+  } else if (imageIndex === 3) {
+    const str = "pasta al limone";
+    const result = str.link("https://www.bonappetit.com/recipe/pasta-al-limone"); 
+    document.getElementById("recipe-link").innerHTML = result;
+  } else if (imageIndex === 4) {
+    const str = "basque burnt cheesecake";
+    const result = str.link("https://www.bonappetit.com/recipe/basque-burnt-cheesecake");
+    document.getElementById("recipe-link").innerHTML = result;
+  } 
+
+  imageContainer.innerHTML = '';
+  imageContainer.appendChild(imgElement);
 }

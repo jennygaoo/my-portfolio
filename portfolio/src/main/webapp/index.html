@@ -2,17 +2,35 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>My Portfolio</title>
-    <link rel="stylesheet" href="style.css">
+    <title>My Portfolio | Home Page</title>
+    <link rel="stylesheet" href="style.css"></link>
     <script src="script.js"></script>
   </head>
   <body>
-    <div id="content">
-      <h1>My Portfolio</h1>
-      <p>This is my portfolio.</p>
-      <p>Click here to get a random message:</p>
-      <button onclick="addRandomGreeting()">Hello</button>
-      <div id="greeting-container"></div>
+    <div class="content">
+      <div class="header">
+        <a href="index.html">home page</a>
+        <a href="photogallery.html">my photo gallery</a>
+        <a href="recipes.html">recipes i like</a>
+        <a href="https://github.com/jennygaoo">my github</a>
+        <a href="penguin.html">penguin livestream</a>
+        <a href="aboutme.html">about me</a>
+      </div>
+      <h1>Welcome to Jenny's Portfolio!</h1>
+      <div>
+        <img src="/images/gallery/kermit.gif" alt="kermit dancing"/>
+      </div>
+      <div>
+        <!-- TODO(jennygaoo): fix audio issues -->
+        <audio controls autoplay>
+          <source src="/audio/romanholiday.mp3" type="audio/mpeg" 
+              alt ="nicki minaj roman holiday"> 
+        </audio>
+        <p>
+          the audio has issues autoplaying :,( I think it should work if you
+          click on "home page"
+        </p>
+      </div>
     </div>
   </body>
 </html>
