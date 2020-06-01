@@ -42,3 +42,11 @@ function randomizeRecipe() {
   imageContainer.innerHTML = '';
   imageContainer.appendChild(imgElement);
 }
+
+async function getGreeting() {
+  console.log('Fetching a greeting.');
+ 
+  const response = await fetch('/data');
+  const greeting = await response.text();
+  document.getElementById('greeting').innerHTML = greeting;
+}
