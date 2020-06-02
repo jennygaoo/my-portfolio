@@ -26,7 +26,6 @@ import javax.servlet.http.HttpServletResponse;
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
-  
   private List<String> comments;
 
   @Override
@@ -41,7 +40,15 @@ public class DataServlet extends HttpServlet {
     //want to display the text as an ArrayList
     comments.add(text);
     response.setContentType("text/html;");
-    response.getWriter().println(comments);
+    response.sendRedirect("/index.html");
+  }
+
+  @Override
+  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    Gson gson = new Gson();
+    String json = new Gson().toJson(comments);
+    response.setContentType("application/json;");
+    response.getWriter().println(json);
   }
 
   private String getParameter(HttpServletRequest request, String name, String defaultValue) {

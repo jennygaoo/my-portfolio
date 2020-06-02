@@ -43,10 +43,20 @@ function randomizeRecipe() {
   imageContainer.appendChild(imgElement);
 }
 
-async function getMessage() {
-  console.log('Fetching a message.');
+async function getComments() {
+  console.log('Fetching the comments.');
  
   const response = await fetch('/data');
-  const message = await response.json();
-  document.getElementById('message').innerHTML = message;
+  const comments = await response.json();
+
+  const commentsEl = document.getElementById('comments');
+  comments.forEach((line) => {
+    commentsEl.appendChild(createListElement(line));
+  });
+}
+
+function createListElement(text) {
+  const liElement = document.createElement('li');
+  liElement.innerText = text;
+  return liElement;
 }
