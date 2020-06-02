@@ -37,7 +37,7 @@ public class DataServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String text = getParameter(request, "text-input");
     
-    //want to display the text as an ArrayList
+    // want to display the text as an ArrayList
     comments.add(text);
     response.setContentType("text/html;");
     response.sendRedirect("/index.html");

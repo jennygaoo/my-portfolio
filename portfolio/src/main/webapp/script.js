@@ -44,11 +44,8 @@ function randomizeRecipe() {
 }
 
 async function getComments() {
-  console.log("Fetching the comments.");
- 
   const response = await fetch("/data");
   const comments = await response.json();
-
   const commentsElement = document.getElementById("comments");
   comments.forEach((line) => {
     commentsElement.appendChild(createListElement(line));
