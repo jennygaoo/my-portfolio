@@ -17,21 +17,14 @@
         <a href="aboutme.html">about me</a>
       </div>
       <h1>Welcome to Jenny's Portfolio!</h1>
-      <button onclick="getMessage()">Click for a message!</button>
-      <div id = "message"></div>
+      <form action="/data" method="POST">
+        <textarea name="text-input" placeholder="type comment here"></textarea>
+        <br/><br/>
+        <input type="submit" />
+        <br/><br/>
+      </form>
       <div>
         <img src="/images/gallery/kermit.gif" alt="kermit dancing"/>
-      </div>
-      <div>
-        <!-- TODO(jennygaoo): fix audio issues -->
-        <audio controls autoplay>
-          <source src="/audio/romanholiday.mp3" type="audio/mpeg" 
-              alt ="nicki minaj roman holiday"> 
-        </audio>
-        <p>
-          the audio has issues autoplaying :,( I think it should work if you
-          click on "home page"
-        </p>
       </div>
     </div>
   </body>
