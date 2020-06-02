@@ -26,22 +26,36 @@ import javax.servlet.http.HttpServletResponse;
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
-
-  private List<String> messages;
+  private List<String> comments;
 
   @Override
   public void init() {
-    messages = new ArrayList<>();
-    messages.add("hello");
-    messages.add("how are you");
-    messages.add("good morning");
+    comments = new ArrayList();
   }
-  
+
+  @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    String text = getParameter(request, "text-input");
+    
+    // want to display the text as an ArrayList
+    comments.add(text);
+    response.setContentType("text/html;");
+    response.sendRedirect("/index.html");
+  }
+
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Gson gson = new Gson();
-    String json = new Gson().toJson(messages);
+    String json = new Gson().toJson(comments);
     response.setContentType("application/json;");
     response.getWriter().println(json);
+  }
+
+  private String getParameter(HttpServletRequest request, String name) {
+    String value = request.getParameter(name);
+    if (value == null) {
+      return "";
+    }
+    return value;
   }
 }

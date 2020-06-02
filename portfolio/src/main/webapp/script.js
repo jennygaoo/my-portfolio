@@ -39,14 +39,21 @@ function randomizeRecipe() {
     document.getElementById("recipe-link").innerHTML = result;
   } 
 
-  imageContainer.innerHTML = '';
+  imageContainer.innerHTML = "";
   imageContainer.appendChild(imgElement);
 }
 
-async function getMessage() {
-  console.log('Fetching a message.');
- 
-  const response = await fetch('/data');
-  const message = await response.json();
-  document.getElementById('message').innerHTML = message;
+async function getComments() {
+  const response = await fetch("/data");
+  const comments = await response.json();
+  const commentsElement = document.getElementById("comments");
+  comments.forEach((line) => {
+    commentsElement.appendChild(createListElement(line));
+  });
+}
+
+function createListElement(text) {
+  const liElement = document.createElement("li");
+  liElement.innerText = text;
+  return liElement;
 }
