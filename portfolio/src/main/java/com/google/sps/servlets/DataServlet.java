@@ -25,7 +25,6 @@ import javax.servlet.http.HttpServletResponse;
 
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
 @WebServlet("/data")
-
 public class DataServlet extends HttpServlet {
 
   private List<String> messages;
@@ -36,7 +35,6 @@ public class DataServlet extends HttpServlet {
     messages.add("hello");
     messages.add("how are you");
     messages.add("good morning");
-    
   }
   
   @Override
@@ -48,6 +46,4 @@ public class DataServlet extends HttpServlet {
     String json = new Gson().toJson(messages);
     response.getWriter().println(json);
   }
-
-
 }

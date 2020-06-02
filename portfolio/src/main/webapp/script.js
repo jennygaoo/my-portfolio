@@ -50,4 +50,3 @@ async function getMessage() {
   const greeting = await response.text();
   document.getElementById('greeting').innerHTML = greeting;
 }
-
