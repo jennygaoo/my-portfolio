@@ -39,24 +39,24 @@ function randomizeRecipe() {
     document.getElementById("recipe-link").innerHTML = result;
   } 
 
-  imageContainer.innerHTML = '';
+  imageContainer.innerHTML = "";
   imageContainer.appendChild(imgElement);
 }
 
 async function getComments() {
-  console.log('Fetching the comments.');
+  console.log("Fetching the comments.");
  
-  const response = await fetch('/data');
+  const response = await fetch("/data");
   const comments = await response.json();
 
-  const commentsEl = document.getElementById('comments');
+  const commentsElement = document.getElementById("comments");
   comments.forEach((line) => {
-    commentsEl.appendChild(createListElement(line));
+    commentsElement.appendChild(createListElement(line));
   });
 }
 
 function createListElement(text) {
-  const liElement = document.createElement('li');
+  const liElement = document.createElement("li");
   liElement.innerText = text;
   return liElement;
 }

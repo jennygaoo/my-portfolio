@@ -29,13 +29,13 @@ public class DataServlet extends HttpServlet {
   private List<String> comments;
 
   @Override
-  public void init(){
+  public void init() {
     comments = new ArrayList();
   }
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    String text = getParameter(request, "text-input", "");
+    String text = getParameter(request, "text-input");
     
     //want to display the text as an ArrayList
     comments.add(text);
@@ -51,10 +51,10 @@ public class DataServlet extends HttpServlet {
     response.getWriter().println(json);
   }
 
-  private String getParameter(HttpServletRequest request, String name, String defaultValue) {
+  private String getParameter(HttpServletRequest request, String name) {
     String value = request.getParameter(name);
     if (value == null) {
-      return defaultValue;
+      return "";
     }
     return value;
   }
