@@ -43,10 +43,11 @@ function randomizeRecipe() {
   imageContainer.appendChild(imgElement);
 }
 
-async function getGreeting() {
-  console.log('Fetching a greeting.');
+async function getMessage() {
+  console.log('Fetching a message.');
  
   const response = await fetch('/data');
   const greeting = await response.text();
   document.getElementById('greeting').innerHTML = greeting;
 }
+
