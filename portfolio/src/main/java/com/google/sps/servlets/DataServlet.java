@@ -35,6 +35,7 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
   private List<Comment> comments;
+  private static final int MAX_COMMENTS_FETCHED = 2;
 
   @Override
   public void init() {
@@ -61,7 +62,8 @@ public class DataServlet extends HttpServlet {
     Query commentsQuery = new Query("Comment").addSort("timestamp", SortDirection.DESCENDING);
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    List<Entity> results = datastore.prepare(commentsQuery).asList(FetchOptions.Builder.withLimit(2));
+    List<Entity> results = datastore.prepare(commentsQuery)
+                          .asList(FetchOptions.Builder.withLimit(MAX_COMMENTS_FETCHED));
 
     for (Entity entity : results) {
       long id = entity.getKey().getId();
