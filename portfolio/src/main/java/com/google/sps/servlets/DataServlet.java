@@ -34,8 +34,8 @@ import javax.servlet.http.HttpServletResponse;
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
-  private List<Comment> comments;
   private static final int MAX_COMMENTS_FETCHED = 2;
+  private List<Comment> comments;
 
   @Override
   public void init() {
