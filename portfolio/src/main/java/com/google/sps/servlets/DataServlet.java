@@ -17,6 +17,7 @@ package com.google.sps.servlets;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
@@ -33,6 +34,7 @@ import javax.servlet.http.HttpServletResponse;
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
+  private static final int MAX_COMMENTS_FETCHED = 2;
   private List<Comment> comments;
 
   @Override
@@ -60,9 +62,10 @@ public class DataServlet extends HttpServlet {
     Query commentsQuery = new Query("Comment").addSort("timestamp", SortDirection.DESCENDING);
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    PreparedQuery results = datastore.prepare(commentsQuery);
+    List<Entity> results = datastore.prepare(commentsQuery)
+                          .asList(FetchOptions.Builder.withLimit(MAX_COMMENTS_FETCHED));
 
-    for (Entity entity : results.asIterable()) {
+    for (Entity entity : results) {
       long id = entity.getKey().getId();
       String content = (String) entity.getProperty("content");
       long timestamp = (long) entity.getProperty("timestamp");
