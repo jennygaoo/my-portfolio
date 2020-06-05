@@ -47,12 +47,13 @@ async function getComments() {
   const response = await fetch("/data");
   const comments = await response.json();
   const commentsElement = document.getElementById("comments");
+  console.log(commentsElement);
   comments.forEach((comment) => {
-    commentsElement.appendChild(createCommentElement(comment));
+    commentsElement.appendChild(createCommentsElement(comment));
   });
 }
 
-function createCommentElement(comment) {
+function createCommentsElement(comment) {
   const commentElement = document.createElement("li");
   commentElement.innerText = comment.content;
   return commentElement;
