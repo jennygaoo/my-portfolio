@@ -35,12 +35,6 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
   private static final int MAX_COMMENTS_FETCHED = 4;
-  // private List<Comment> comments;
-
-  @Override
-  public void init() {
-    // comments = new ArrayList();
-  }
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {

@@ -55,6 +55,26 @@ async function getComments() {
 
 function createCommentsElement(comment) {
   const commentElement = document.createElement("li");
-  commentElement.innerText = comment.content;
+  commentElement.className = "comment";
+
+  const contentElement = document.createElement('span');
+  contentElement.innerText = comment.content;
+
+  const deleteButtonElement = document.createElement('button');
+  deleteButtonElement.innerText = 'Delete';
+  deleteButtonElement.addEventListener('click', () => {
+    deleteComment(comment);
+
+    commentElement.remove();
+  });
+
+  commentElement.appendChild(contentElement);
+  commentElement.appendChild(deleteButtonElement);
   return commentElement;
+}
+
+function deleteComment(comment) {
+  const params = new URLSearchParams();
+  params.append('id', comment.id);
+  fetch('/delete-comment', {method: 'POST', body: params});
 }
