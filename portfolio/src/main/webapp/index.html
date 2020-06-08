@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="style.css"></link>
     <script src="script.js"></script>
   </head>
-  <body>
+  <body onload="getComments()">
     <div class="content">
       <div class="header">
         <a href="index.html">home page</a>
@@ -19,11 +19,10 @@
       <h1>Welcome to Jenny's Portfolio!</h1>
       <form action="/data" method="POST">
         <textarea name="text-input" placeholder="type comment here"></textarea>
-        <br/><br/>
-        <input type="submit" value="post comment"/>
-        <br/><br/>
+        <br/>
+        <button>submit comment</button>
+        <br/>
       </form>
-      <button onclick="getComments()">see comments here</button>
       <div id="comments"></div>
       <img src="/images/gallery/kermit.gif" alt="kermit dancing"/>
     </div>

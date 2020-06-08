@@ -34,19 +34,12 @@ import javax.servlet.http.HttpServletResponse;
 /** Servlet that returns some example content. TODO: modify this file to handle comments data */
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
-  private static final int MAX_COMMENTS_FETCHED = 2;
-  private List<Comment> comments;
-
-  @Override
-  public void init() {
-    comments = new ArrayList();
-  }
+  private static final int MAX_COMMENTS_FETCHED = 4;
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     String content = request.getParameter("text-input");
     long timestamp = System.currentTimeMillis();
-
     Entity commentEntity = new Entity("Comment");
     commentEntity.setProperty("content", content);
     commentEntity.setProperty("timestamp", timestamp);
@@ -59,23 +52,23 @@ public class DataServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    List<Comment> comments = new ArrayList<>();
     Query commentsQuery = new Query("Comment").addSort("timestamp", SortDirection.DESCENDING);
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     List<Entity> results = datastore.prepare(commentsQuery)
                           .asList(FetchOptions.Builder.withLimit(MAX_COMMENTS_FETCHED));
-
+    
     for (Entity entity : results) {
       long id = entity.getKey().getId();
       String content = (String) entity.getProperty("content");
       long timestamp = (long) entity.getProperty("timestamp");
-
       Comment comment = new Comment(id, content, timestamp);
       comments.add(comment);
     }
 
     Gson gson = new Gson();
-    String json = new Gson().toJson(comments);
+    String json = gson.toJson(comments);
     response.setContentType("application/json;");
     response.getWriter().println(json);
   }
