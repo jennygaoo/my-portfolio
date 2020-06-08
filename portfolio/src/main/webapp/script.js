@@ -79,13 +79,33 @@ function deleteComment(comment) {
 }
 
 function loadMap() {
-  console.log('hello');
-  const map = new google.maps.Map(
+  var sanFrancisco = {lat: 37.7749, lng: -122.4194};
+  const cafeMap = new google.maps.Map(
     document.getElementById("map"),
-    {center: {lat: 37.422, lng: -122.084}, zoom: 16});
-}
+    {center: sanFrancisco, zoom: 12});
 
-function loadFunctions() {
-  getComments();
-  loadMap();
+  const philzMarker = new google.maps.Marker({
+    position: {lat: 37.793949, lng: -122.398062},
+    map: cafeMap, 
+    title: "Philz Coffee"
+  });
+
+  const sFrankMarker = new google.maps.Marker({
+    position: {lat:	37.779511, lng: -122.410410608696},
+    map: cafeMap, 
+    title: "Saint Frank Coffee"
+  });
+
+  const sMatchaMarker = new google.maps.Marker({
+    position: {lat:	37.764730, lng: -122.421731},
+    map: cafeMap, 
+    title: "Stonemill Matcha"
+  });
+
+  const fBarrelMarker = new google.maps.Marker({
+    position: {lat:	37.768055, lng: -122.422117},
+    map: cafeMap, 
+    title: "Four Barrel Coffee"
+  });
+
 }

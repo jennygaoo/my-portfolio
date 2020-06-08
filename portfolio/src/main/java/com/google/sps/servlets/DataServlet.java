@@ -35,7 +35,7 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
   private static final int MAX_COMMENTS_FETCHED = 4;
-  private Gson gson = new Gson();
+  private static final Gson gson = new Gson();
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
