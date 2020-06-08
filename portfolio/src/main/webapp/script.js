@@ -47,7 +47,6 @@ async function getComments() {
   const response = await fetch("/data");
   const comments = await response.json();
   const commentsElement = document.getElementById("comments");
-  console.log(commentsElement);
   comments.forEach((comment) => {
     commentsElement.appendChild(createCommentsElement(comment));
   });
@@ -77,4 +76,16 @@ function deleteComment(comment) {
   const params = new URLSearchParams();
   params.append('id', comment.id);
   fetch('/delete-comment', {method: 'POST', body: params});
+}
+
+function loadMap() {
+  console.log('hello');
+  const map = new google.maps.Map(
+    document.getElementById("map"),
+    {center: {lat: 37.422, lng: -122.084}, zoom: 16});
+}
+
+function loadFunctions() {
+  getComments();
+  loadMap();
 }

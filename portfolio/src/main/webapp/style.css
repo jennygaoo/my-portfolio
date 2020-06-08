@@ -63,6 +63,12 @@
   vertical-align: middle;
 } 
 
+#map {
+  border: thin solid black;
+  height: 500px;
+  width: 500px;
+}
+
 #random-image-container img {
   margin-top: 20px;
 }

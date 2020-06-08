@@ -35,6 +35,7 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/data")
 public class DataServlet extends HttpServlet {
   private static final int MAX_COMMENTS_FETCHED = 4;
+  private Gson gson = new Gson();
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -58,7 +59,6 @@ public class DataServlet extends HttpServlet {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     List<Entity> results = datastore.prepare(commentsQuery)
                           .asList(FetchOptions.Builder.withLimit(MAX_COMMENTS_FETCHED));
-    
     for (Entity entity : results) {
       long id = entity.getKey().getId();
       String content = (String) entity.getProperty("content");
@@ -67,7 +67,6 @@ public class DataServlet extends HttpServlet {
       comments.add(comment);
     }
 
-    Gson gson = new Gson();
     String json = gson.toJson(comments);
     response.setContentType("application/json;");
     response.getWriter().println(json);
