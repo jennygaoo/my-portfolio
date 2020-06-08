@@ -90,10 +90,26 @@ function loadMap() {
     title: "Philz Coffee"
   });
 
+  const philzInfoWindow = new google.maps.InfoWindow({
+    content: "I like the Iced Coffee Rose!"
+  });
+
+  philzMarker.addListener('click', function(){
+    philzInfoWindow.open(cafeMap, philzMarker);
+  });
+
   const sFrankMarker = new google.maps.Marker({
     position: {lat:	37.779511, lng: -122.410410608696},
     map: cafeMap, 
     title: "Saint Frank Coffee"
+  });
+
+  const sFrankInfoWindow = new google.maps.InfoWindow({
+    content: "The hot chocolate & cappuccino are superb"
+  });
+
+  sFrankMarker.addListener('click', function(){
+    sFrankInfoWindow.open(cafeMap, sFrankMarker);
   });
 
   const sMatchaMarker = new google.maps.Marker({
@@ -102,10 +118,25 @@ function loadMap() {
     title: "Stonemill Matcha"
   });
 
+  const sMatchaInfoWindow = new google.maps.InfoWindow({
+    content: "I like the yuzu meringue"
+  });
+
+  sMatchaMarker.addListener('click', function(){
+    sMatchaInfoWindow.open(cafeMap, sMatchaMarker);
+  });
+
   const fBarrelMarker = new google.maps.Marker({
     position: {lat:	37.768055, lng: -122.422117},
     map: cafeMap, 
     title: "Four Barrel Coffee"
   });
 
+  const fBarrelInfoWindow = new google.maps.InfoWindow({
+    content: "they do a fine job with their lattes!"
+  });
+
+  fBarrelMarker.addListener('click', function(){
+    fBarrelInfoWindow.open(cafeMap, fBarrelMarker);
+  });
 }
