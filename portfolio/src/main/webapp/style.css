@@ -69,6 +69,14 @@
   width: 500px;
 }
 
+#map h1{
+  font-family: monospace;
+}
+
+#map p{
+  font-family: monospace;
+}
+
 #random-image-container img {
   margin-top: 20px;
 }

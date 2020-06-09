@@ -99,7 +99,9 @@ function loadMapItem(mapName, itemName, latValue, lngValue, itemDescription) {
   });
 
   const itemInfoWindow = new google.maps.InfoWindow({
-    content: itemDescription
+   // content: itemDescription
+ 
+    content: "<h1>"+itemName+"</h1>"+"<p>"+itemDescription+"</p>"
   });
 
   itemMarker.addListener('click', function(){
