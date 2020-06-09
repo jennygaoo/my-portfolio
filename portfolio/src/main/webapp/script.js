@@ -98,45 +98,45 @@ function loadMap() {
     philzInfoWindow.open(cafeMap, philzMarker);
   });
 
-  const sFrankMarker = new google.maps.Marker({
+  const saintFrankMarker = new google.maps.Marker({
     position: {lat:	37.779511, lng: -122.410410608696},
     map: cafeMap, 
     title: "Saint Frank Coffee"
   });
 
-  const sFrankInfoWindow = new google.maps.InfoWindow({
+  const saintFrankInfoWindow = new google.maps.InfoWindow({
     content: "The hot chocolate & cappuccino are superb"
   });
 
-  sFrankMarker.addListener('click', function(){
-    sFrankInfoWindow.open(cafeMap, sFrankMarker);
+  saintFrankMarker.addListener('click', function(){
+    saintFrankInfoWindow.open(cafeMap, saintFrankMarker);
   });
 
-  const sMatchaMarker = new google.maps.Marker({
+  const stonemillMatchaMarker = new google.maps.Marker({
     position: {lat:	37.764730, lng: -122.421731},
     map: cafeMap, 
     title: "Stonemill Matcha"
   });
 
-  const sMatchaInfoWindow = new google.maps.InfoWindow({
+  const stonemillMatchaInfoWindow = new google.maps.InfoWindow({
     content: "I like the yuzu meringue"
   });
 
-  sMatchaMarker.addListener('click', function(){
-    sMatchaInfoWindow.open(cafeMap, sMatchaMarker);
+  stonemillMatchaMarker.addListener('click', function(){
+    stonemillMatchaInfoWindow.open(cafeMap, stonemillMatchaMarker);
   });
 
-  const fBarrelMarker = new google.maps.Marker({
+  const fourBarrelMarker = new google.maps.Marker({
     position: {lat:	37.768055, lng: -122.422117},
     map: cafeMap, 
     title: "Four Barrel Coffee"
   });
 
-  const fBarrelInfoWindow = new google.maps.InfoWindow({
+  const fourBarrelInfoWindow = new google.maps.InfoWindow({
     content: "they do a fine job with their lattes!"
   });
 
-  fBarrelMarker.addListener('click', function(){
-    fBarrelInfoWindow.open(cafeMap, fBarrelMarker);
+  fourBarrelMarker.addListener('click', function(){
+    fourBarrelInfoWindow.open(cafeMap, fourBarrelMarker);
   });
 }
