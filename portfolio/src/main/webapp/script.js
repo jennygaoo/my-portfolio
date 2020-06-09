@@ -79,7 +79,7 @@ function deleteComment(comment) {
 }
 
 function loadMap() {
-  var sanFrancisco = {lat: 37.7749, lng: -122.4194};
+  const sanFrancisco = {lat: 37.7749, lng: -122.4194};
   const cafeMap = new google.maps.Map(
     document.getElementById("map"),
     {center: sanFrancisco, zoom: 12});
