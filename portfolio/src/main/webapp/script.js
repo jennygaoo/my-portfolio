@@ -84,59 +84,25 @@ function loadMap() {
     document.getElementById("map"),
     {center: sanFrancisco, zoom: 12});
 
-  const philzMarker = new google.maps.Marker({
-    position: {lat: 37.793949, lng: -122.398062},
-    map: cafeMap, 
-    title: "Philz Coffee"
+  loadMapItem(cafeMap, "Philz Coffee", 37.793949, -122.398062, "I like the Iced Coffee Rose!");
+  loadMapItem(cafeMap, "Saint Frank Coffee", 37.779511, -122.410411, 
+              "The hot chocolate & cappuccino are superb");
+  loadMapItem(cafeMap, "Stonemill Matcha", 37.764730, -122.421731, "I like the yuzu meringue");
+  loadMapItem(cafeMap, "Four Barrel Coffee", 37.768055, -122.422117, "The lattes are spectacular!");
+}
+
+function loadMapItem(mapName, itemName, latValue, lngValue, itemDescription) {
+  const itemMarker = new google.maps.Marker({
+    position: {lat:	latValue, lng: lngValue},
+    map: mapName, 
+    title: itemName
   });
 
-  const philzInfoWindow = new google.maps.InfoWindow({
-    content: "I like the Iced Coffee Rose!"
+  const itemInfoWindow = new google.maps.InfoWindow({
+    content: itemDescription
   });
 
-  philzMarker.addListener('click', function(){
-    philzInfoWindow.open(cafeMap, philzMarker);
-  });
-
-  const saintFrankMarker = new google.maps.Marker({
-    position: {lat:	37.779511, lng: -122.410410608696},
-    map: cafeMap, 
-    title: "Saint Frank Coffee"
-  });
-
-  const saintFrankInfoWindow = new google.maps.InfoWindow({
-    content: "The hot chocolate & cappuccino are superb"
-  });
-
-  saintFrankMarker.addListener('click', function(){
-    saintFrankInfoWindow.open(cafeMap, saintFrankMarker);
-  });
-
-  const stonemillMatchaMarker = new google.maps.Marker({
-    position: {lat:	37.764730, lng: -122.421731},
-    map: cafeMap, 
-    title: "Stonemill Matcha"
-  });
-
-  const stonemillMatchaInfoWindow = new google.maps.InfoWindow({
-    content: "I like the yuzu meringue"
-  });
-
-  stonemillMatchaMarker.addListener('click', function(){
-    stonemillMatchaInfoWindow.open(cafeMap, stonemillMatchaMarker);
-  });
-
-  const fourBarrelMarker = new google.maps.Marker({
-    position: {lat:	37.768055, lng: -122.422117},
-    map: cafeMap, 
-    title: "Four Barrel Coffee"
-  });
-
-  const fourBarrelInfoWindow = new google.maps.InfoWindow({
-    content: "they do a fine job with their lattes!"
-  });
-
-  fourBarrelMarker.addListener('click', function(){
-    fourBarrelInfoWindow.open(cafeMap, fourBarrelMarker);
+  itemMarker.addListener('click', function(){
+    itemInfoWindow.open(mapName, itemMarker);
   });
 }
