@@ -91,16 +91,14 @@ function loadMap() {
   loadMapItem(cafeMap, "Four Barrel Coffee", 37.768055, -122.422117, "The lattes are spectacular!");
 }
 
-function loadMapItem(mapName, itemName, latValue, lngValue, itemDescription) {
+function loadMapItem(mapName, itemName, latitudeValue, longitudeValue, itemDescription) {
   const itemMarker = new google.maps.Marker({
-    position: {lat:	latValue, lng: lngValue},
+    position: {lat:latitudeValue, lng:longitudeValue},
     map: mapName, 
     title: itemName
   });
 
   const itemInfoWindow = new google.maps.InfoWindow({
-   // content: itemDescription
- 
     content: "<h1>"+itemName+"</h1>"+"<p>"+itemDescription+"</p>"
   });
 
