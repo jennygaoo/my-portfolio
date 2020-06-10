@@ -36,13 +36,13 @@ public class AuthenticationServlet extends HttpServlet {
       String userEmail = userService.getCurrentUser().getEmail();
       String logoutUrl = userService.createLogoutURL(REDIRECT_URL);
       
-      //give user option to log out if they're logged in
+      // give user option to log out if they're logged in
       response.getWriter().println("<p>" + userEmail + ", you've logged in.</p>");
       response.getWriter().println("<p>Logout <a href=\"" + logoutUrl + "\">here</a>.</p>");
     } else {
       String loginUrl = userService.createLoginURL(REDIRECT_URL);
       
-      //user the option to log in if they haven't
+      // user the option to log in if they haven't
       response.getWriter().println("<p>You haven't logged in yet.</p>");
       response.getWriter().println("<p>Login <a href=\"" + loginUrl + "\">here</a>.</p>");
     }
