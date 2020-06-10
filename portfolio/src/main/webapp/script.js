@@ -47,7 +47,6 @@ async function getComments() {
   const response = await fetch("/data");
   const comments = await response.json();
   const commentsElement = document.getElementById("comments");
-  console.log(commentsElement);
   comments.forEach((comment) => {
     commentsElement.appendChild(createCommentsElement(comment));
   });
@@ -77,4 +76,33 @@ function deleteComment(comment) {
   const params = new URLSearchParams();
   params.append('id', comment.id);
   fetch('/delete-comment', {method: 'POST', body: params});
+}
+
+function loadMap() {
+  const sanFrancisco = {lat: 37.7749, lng: -122.4194};
+  const cafeMap = new google.maps.Map(
+    document.getElementById("map"),
+    {center: sanFrancisco, zoom: 12});
+
+  loadMapItem(cafeMap, "Philz Coffee", 37.793949, -122.398062, "I like the Iced Coffee Rose!");
+  loadMapItem(cafeMap, "Saint Frank Coffee", 37.779511, -122.410411, 
+              "The hot chocolate & cappuccino are superb");
+  loadMapItem(cafeMap, "Stonemill Matcha", 37.764730, -122.421731, "I like the yuzu meringue");
+  loadMapItem(cafeMap, "Four Barrel Coffee", 37.768055, -122.422117, "The lattes are spectacular!");
+}
+
+function loadMapItem(mapName, itemName, latitudeValue, longitudeValue, itemDescription) {
+  const itemMarker = new google.maps.Marker({
+    position: {lat:latitudeValue, lng:longitudeValue},
+    map: mapName, 
+    title: itemName
+  });
+
+  const itemInfoWindow = new google.maps.InfoWindow({
+    content: "<h1>"+itemName+"</h1>"+"<p>"+itemDescription+"</p>"
+  });
+
+  itemMarker.addListener('click', function(){
+    itemInfoWindow.open(mapName, itemMarker);
+  });
 }
