@@ -24,24 +24,29 @@ import javax.servlet.http.HttpServletResponse;
 
 @WebServlet("/authentication")
 public class AuthenticationServlet extends HttpServlet {
+  private static String REDIRECT_URL = "/authentication";
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     response.setContentType("text/html");
 
     UserService userService = UserServiceFactory.getUserService();
+    //if user is logged in, the page addresses the user by their email and offers a logout option
     if (userService.isUserLoggedIn()) {
       String userEmail = userService.getCurrentUser().getEmail();
-      String urlToRedirectToAfterUserLogsOut = "/authentication";
+      String urlToRedirectToAfterUserLogsOut = REDIRECT_URL;
       String logoutUrl = userService.createLogoutURL(urlToRedirectToAfterUserLogsOut);
 
       response.getWriter().println("<p>" + userEmail + ", you've logged in.</p>");
+       //logoutURL redirects user to logout page
       response.getWriter().println("<p>Logout <a href=\"" + logoutUrl + "\">here</a>.</p>");
     } else {
-      String urlToRedirectToAfterUserLogsIn = "/authentication";
+      //if user is not logged in, the page has an option for user to log in 
+      String urlToRedirectToAfterUserLogsIn = REDIRECT_URL;
       String loginUrl = userService.createLoginURL(urlToRedirectToAfterUserLogsIn);
 
       response.getWriter().println("<p>You haven't logged in yet.</p>");
+      //loginURL redirects user to loginpage
       response.getWriter().println("<p>Login <a href=\"" + loginUrl + "\">here</a>.</p>");
     }
   }
