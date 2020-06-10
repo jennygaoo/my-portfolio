@@ -20,26 +20,26 @@ package com.google.sps.data;
 public class MapMarker {
 
   private final String itemName;
-  private final double lat;
-  private final double lng;
+  private final double latitude;
+  private final double longitude;
   private final String content;
 
-  public MapMarker(String itemName, double lat, double lng, String content) {
+  public MapMarker(String itemName, double latitude, double longitude, String content) {
     this.itemName = itemName;
-    this.lat = lat;
-    this.lng = lng;
+    this.latitude = latitude;
+    this.longitude = longitude;
     this.content = content;
   }
 
   public String getItemName() {
     return itemName;
   }
-  public double getLat() {
-    return lat;
+  public double getLatitude() {
+    return latitude;
   }
 
-  public double getLng() {
-    return lng;
+  public double getLongitude() {
+    return longitude;
   }
 
   public String getContent() {

@@ -102,14 +102,15 @@ function loadMap() {
 async function fetchMapMarkers() {
   const response = await fetch("/mapmarkers");
   const mapMarkers = await response.json();
+  console.log(mapMarkers);
   mapMarkers.forEach((mapMarker) => {
-    loadMapItem(mapMarker.itemName, mapMarker.lat, mapMarker.lng, mapMarker.content)
+    loadMapItem(mapMarker.itemName, mapMarker.latitude, mapMarker.longitude, mapMarker.content)
   });
 }
 
-function loadMapItem(itemName, latitudeValue, longitudeValue, itemDescription) {
+function loadMapItem(itemName, latitude, longitude, itemDescription) {
   const itemMarker = new google.maps.Marker({
-    position: {lat:latitudeValue, lng: longitudeValue},
+    position: {lat: latitude, lng: longitude},
     map: cafeMap,
     title: itemName
   });
@@ -123,25 +124,25 @@ function loadMapItem(itemName, latitudeValue, longitudeValue, itemDescription) {
   });
 }
 
-function postMapMarker(itemName, lat, lng, content) {
+function postMapMarker(itemName, latitude, longitude, content) {
   const params = new URLSearchParams();
   params.append("itemName", itemName);
-  params.append("lat", lat);
-  params.append("lng", lng);
+  params.append("latitude", latitude);
+  params.append("longitude", longitude);
   params.append("content", content);
 
   fetch("/mapmarkers", {method:"POST", body:params});
 }
 
-function createMapMarkerForEdit(lat, lng){
+function createMapMarkerForEdit(latitude, longitude){
   // remove editable marker if one is already shown
   if (editMarker) {
     editMarker.setMap(null);
   }
 
-  editMarker = new google.maps.Marker({position: {lat: lat, lng: lng}, map: cafeMap});
+  editMarker = new google.maps.Marker({position: {lat: latitude, lng: longitude}, map: cafeMap});
 
-  const infoWindow = new google.maps.InfoWindow({content: buildInfoWindowInput(lat, lng)});
+  const infoWindow = new google.maps.InfoWindow({content: buildInfoWindowInput(latitude, longitude)});
 
   google.maps.event.addListener(infoWindow, "closeclick", () => {
       editMarker.setMap(null);
@@ -151,15 +152,15 @@ function createMapMarkerForEdit(lat, lng){
   infoWindow.open(cafeMap, editMarker);
 }
 
-function buildInfoWindowInput(lat, lng) {
+function buildInfoWindowInput(latitude, longitude) {
   const titleBox = document.createElement("textarea");
   const descriptionBox = document.createElement("textarea");
   const submitButton = document.createElement("button");
   submitButton.appendChild(document.createTextNode("Submit"));
 
   submitButton.onclick = () => {
-    postMapMarker(titleBox.value, lat, lng, descriptionBox.value);
-    loadMapItem(titleBox.value, lat, lng, descriptionBox.value);
+    postMapMarker(titleBox.value, latitude, longitude, descriptionBox.value);
+    loadMapItem(titleBox.value, latitude, longitude, descriptionBox.value);
     editMarker.setMap(null);
   };
 
