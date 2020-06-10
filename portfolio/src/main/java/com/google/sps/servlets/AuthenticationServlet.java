@@ -31,22 +31,19 @@ public class AuthenticationServlet extends HttpServlet {
     response.setContentType("text/html");
 
     UserService userService = UserServiceFactory.getUserService();
-    //if user is logged in, the page addresses the user by their email and offers a logout option
+    
     if (userService.isUserLoggedIn()) {
       String userEmail = userService.getCurrentUser().getEmail();
-      String urlToRedirectToAfterUserLogsOut = REDIRECT_URL;
-      String logoutUrl = userService.createLogoutURL(urlToRedirectToAfterUserLogsOut);
-
+      String logoutUrl = userService.createLogoutURL(REDIRECT_URL);
+      
+      //give user option to log out if they're logged in
       response.getWriter().println("<p>" + userEmail + ", you've logged in.</p>");
-       //logoutURL redirects user to logout page
       response.getWriter().println("<p>Logout <a href=\"" + logoutUrl + "\">here</a>.</p>");
     } else {
-      //if user is not logged in, the page has an option for user to log in 
-      String urlToRedirectToAfterUserLogsIn = REDIRECT_URL;
-      String loginUrl = userService.createLoginURL(urlToRedirectToAfterUserLogsIn);
-
+      String loginUrl = userService.createLoginURL(REDIRECT_URL);
+      
+      //user the option to log in if they haven't
       response.getWriter().println("<p>You haven't logged in yet.</p>");
-      //loginURL redirects user to loginpage
       response.getWriter().println("<p>Login <a href=\"" + loginUrl + "\">here</a>.</p>");
     }
   }
