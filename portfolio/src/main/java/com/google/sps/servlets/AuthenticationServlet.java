@@ -33,23 +33,23 @@ public class AuthenticationServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    boolean userLoginStatus;
+    boolean isLoggedIn;
     String redirectUrl;
     UserService userService = UserServiceFactory.getUserService();
     
     if (userService.isUserLoggedIn()) {
-      userLoginStatus = true;
+      isLoggedIn = true;
       
       String logoutUrl = userService.createLogoutURL(REDIRECT_URL);
       redirectUrl = logoutUrl;
     } else {
-      userLoginStatus = false;
+      isLoggedIn = false;
 
       String loginUrl = userService.createLoginURL(REDIRECT_URL);
       redirectUrl = loginUrl;
     } 
 
-    UserLoginInfo userLoginInfo = new UserLoginInfo(userLoginStatus, redirectUrl);
+    UserLoginInfo userLoginInfo = new UserLoginInfo(isLoggedIn, redirectUrl);
     String json = gson.toJson(userLoginInfo);
     response.setContentType("application/json");
     response.getWriter().println(json);

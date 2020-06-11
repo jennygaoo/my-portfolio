@@ -16,16 +16,16 @@ package com.google.sps.data;
 
 public final class UserLoginInfo {
 
-  private final boolean loginStatus;
+  private final boolean isLoggedIn;
   private final String redirectUrl;
 
-  public UserLoginInfo(Boolean loginStatus, String redirectUrl) {
-    this.loginStatus = loginStatus;
+  public UserLoginInfo(boolean isLoggedIn, String redirectUrl) {
+    this.isLoggedIn = isLoggedIn;
     this.redirectUrl = redirectUrl;
   }
 
-  public Boolean getLoginStatus() {
-    return loginStatus;
+  public boolean getisLoggedIn() {
+    return isLoggedIn;
   }
 
   public String getRedirectUrl() {
