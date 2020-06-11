@@ -16,35 +16,44 @@ package com.google.sps.servlets;
 
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
+import com.google.gson.Gson;
+import com.google.sps.data.UserLoginInfo;
 import java.io.IOException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.logging.Logger;
 
 @WebServlet("/authentication")
 public class AuthenticationServlet extends HttpServlet {
-  private static String REDIRECT_URL = "/authentication";
+  private static String REDIRECT_URL = "/index.html";
+  private static Gson gson = new Gson();
+  private static Logger log = Logger.getLogger("AuthenticationServlet");
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    response.setContentType("text/html");
-
+    Boolean userLoginStatus;
+    String redirectUrl;
     UserService userService = UserServiceFactory.getUserService();
     
     if (userService.isUserLoggedIn()) {
-      String userEmail = userService.getCurrentUser().getEmail();
+      log.info("user is logged in");
+      userLoginStatus = true;
+      
       String logoutUrl = userService.createLogoutURL(REDIRECT_URL);
-      
-      // give user option to log out if they're logged in
-      response.getWriter().println("<p>" + userEmail + ", you've logged in.</p>");
-      response.getWriter().println("<p>Logout <a href=\"" + logoutUrl + "\">here</a>.</p>");
+      redirectUrl = logoutUrl;
     } else {
+      log.info("user is logged out");
+      userLoginStatus = false;
+
       String loginUrl = userService.createLoginURL(REDIRECT_URL);
-      
-      // user the option to log in if they haven't
-      response.getWriter().println("<p>You haven't logged in yet.</p>");
-      response.getWriter().println("<p>Login <a href=\"" + loginUrl + "\">here</a>.</p>");
-    }
+      redirectUrl = loginUrl;
+    } 
+
+    UserLoginInfo userLoginInfo = new UserLoginInfo(userLoginStatus, redirectUrl);
+    String json = gson.toJson(userLoginInfo);
+    response.setContentType("application/json");
+    response.getWriter().println(json);
   }
 }
