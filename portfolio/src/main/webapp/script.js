@@ -56,12 +56,12 @@ function createCommentsElement(comment) {
   const commentElement = document.createElement("li");
   commentElement.className = "comment";
 
-  const contentElement = document.createElement('span');
+  const contentElement = document.createElement("span");
   contentElement.innerText = comment.content;
 
-  const deleteButtonElement = document.createElement('button');
-  deleteButtonElement.innerText = 'Delete';
-  deleteButtonElement.addEventListener('click', () => {
+  const deleteButtonElement = document.createElement("button");
+  deleteButtonElement.innerText = "Delete";
+  deleteButtonElement.addEventListener("click", () => {
     deleteComment(comment);
 
     commentElement.remove();
@@ -74,8 +74,8 @@ function createCommentsElement(comment) {
 
 function deleteComment(comment) {
   const params = new URLSearchParams();
-  params.append('id', comment.id);
-  fetch('/delete-comment', {method: 'POST', body: params});
+  params.append("id", comment.id);
+  fetch("/delete-comment", {method: "POST", body: params});
 }
 
 function loadMap() {
@@ -105,4 +105,24 @@ function loadMapItem(mapName, itemName, latitudeValue, longitudeValue, itemDescr
   itemMarker.addListener('click', function(){
     itemInfoWindow.open(mapName, itemMarker);
   });
+}
+
+async function displayElement() {
+  const loginStatusMessage = document.getElementById("loginStatusMessage");
+  const commentSection = document.getElementById("commentSection");
+  
+  userLoginInfo = await fetchLoginStatus();
+ 
+  if (userLoginInfo.isLoggedIn === true) {
+    commentSection.style.visibility = "visible";
+    loginStatusMessage.innerHTML = "<a href=\"" + userLoginInfo.redirectUrl + "\">log out here</a>";
+  } else {
+    commentSection.style.visibility = "hidden";
+    loginStatusMessage.innerHTML = "<p>you are not logged in. <a href=\"" + userLoginInfo.redirectUrl + "\">log in here to comment!</a></p>";
+  }
+}
+
+async function fetchLoginStatus() {
+  const response = await fetch("/authentication");
+  return await response.json();
 }

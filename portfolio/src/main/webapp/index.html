@@ -8,7 +8,7 @@
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBwWwawO2ejJzc-yyxuAy_dBE4j8GODpBU"></script>
     <script src="script.js"></script>
   </head>
-  <body onload="loadMap(); getComments();">
+  <body onload="loadMap(); getComments(); displayElement();">
     <div class="content">
       <div class="header">
         <a href="index.html">home page</a>
@@ -19,10 +19,13 @@
         <a href="aboutme.html">about me</a>
       </div>
       <h1>Welcome to Jenny's Portfolio!</h1>
+      <!-- div tag displays message based on whether they're logged in or not -->
+      <div id=loginStatusMessage></div>
       <div id="map"></div>
-      <form action="/data" method="POST">
-        <textarea name="text-input" placeholder="type comment here"></textarea>
-        <br/>
+      <form action="/data" method="POST" id="commentSection">
+        <div id = "commentBox">
+           <textarea name="text-input" placeholder="type comment here"></textarea>
+        </div>
         <button>submit comment</button>
         <br/>
       </form>
