@@ -38,13 +38,11 @@ public class AuthenticationServlet extends HttpServlet {
     UserService userService = UserServiceFactory.getUserService();
     
     if (userService.isUserLoggedIn()) {
-      log.info("user is logged in");
       userLoginStatus = true;
       
       String logoutUrl = userService.createLogoutURL(REDIRECT_URL);
       redirectUrl = logoutUrl;
     } else {
-      log.info("user is logged out");
       userLoginStatus = false;
 
       String loginUrl = userService.createLoginURL(REDIRECT_URL);

@@ -16,7 +16,7 @@ package com.google.sps.data;
 
 public final class UserLoginInfo {
 
-  private final Boolean loginStatus;
+  private final boolean loginStatus;
   private final String redirectUrl;
 
   public UserLoginInfo(Boolean loginStatus, String redirectUrl) {

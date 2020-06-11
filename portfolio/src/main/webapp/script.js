@@ -108,24 +108,23 @@ function loadMapItem(mapName, itemName, latitudeValue, longitudeValue, itemDescr
 }
 
 async function displayElement() {
-  const loginStatus = document.getElementById("loginStatus");
+  const loginStatusMessage = document.getElementById("loginStatusMessage");
+  const map = document.getElementById("map");
+  const commentSection = document.getElementById("commentSection");
   
   userLoginInfo = await fetchLoginStatus();
  
   if (userLoginInfo.loginStatus === true) {
-    //loginStatus.style.visibility = "visible";
-    console.log("USER IS LOGGED IN!!");
-    loginStatus.innerHTML = "<a href=\"" + userLoginInfo.redirectUrl + "\">log out here</a>";
+    commentSection.style.visibility = "visible";
+    loginStatusMessage.innerHTML = "<a href=\"" + userLoginInfo.redirectUrl + "\">log out here</a>";
     
   } else {
-    //loginStatus.style.visibility = "hidden";
-    console.log("USER IS LOGGED OUT!!");
-    loginStatus.innerHTML = "<a href=\"" + userLoginInfo.redirectUrl + "\">log in here</a>";
+    commentSection.style.visibility = "hidden";
+    loginStatusMessage.innerHTML = "<p>you are not logged in. <a href=\"" + userLoginInfo.redirectUrl + "\">log in here to comment!</a></p>";
   }
 }
 
 async function fetchLoginStatus() {
   const response = await fetch("/authentication");
-  const userLoginInfo = await response.json();
-  return userLoginInfo; 
+  return await response.json();
 }

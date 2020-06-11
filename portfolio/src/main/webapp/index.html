@@ -19,11 +19,9 @@
         <a href="aboutme.html">about me</a>
       </div>
       <h1>Welcome to Jenny's Portfolio!</h1>
-      <!-- <button onclick="displayElement();">check log in status</button> -->
-      <div id=loginStatus>TESTING USER LOG IN</div>
+      <div id=loginStatusMessage></div>
       <div id="map"></div>
-      <form action="/data" method="POST">
-        <!-- <button onclick = "openCommentBox()"> open comment input </button> -->
+      <form action="/data" method="POST" id="commentSection">
         <div id = "commentBox">
            <textarea name="text-input" placeholder="type comment here"></textarea>
         </div>
@@ -31,7 +29,7 @@
         <br/>
       </form>
       <div id="comments"></div>
-      <!-- <img src="/images/gallery/kermit.gif" alt="kermit dancing"/> -->
+      <img src="/images/gallery/kermit.gif" alt="kermit dancing"/>
     </div>
   </body>
 </html>
