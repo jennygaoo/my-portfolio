@@ -40,7 +40,6 @@ public class MapMarkerServlet extends HttpServlet {
   private static final String LATITUDE = "latitude";
   private static final String LONGITUDE = "longitude";
 
-
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     response.setContentType("application/json");
