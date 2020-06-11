@@ -40,7 +40,6 @@ public class MapMarkerServlet extends HttpServlet {
   private static String content;
   private static String itemName;
 
-
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     response.setContentType("application/json");
