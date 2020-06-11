@@ -174,3 +174,23 @@ function buildInfoWindowInput(latitude, longitude) {
 
   return entryBox;
 }
+
+async function displayElement() {
+  const loginStatusMessage = document.getElementById("loginStatusMessage");
+  const commentSection = document.getElementById("commentSection");
+  
+  userLoginInfo = await fetchLoginStatus();
+ 
+  if (userLoginInfo.isLoggedIn === true) {
+    commentSection.style.visibility = "visible";
+    loginStatusMessage.innerHTML = "<a href=\"" + userLoginInfo.redirectUrl + "\">log out here</a>";
+  } else {
+    commentSection.style.visibility = "hidden";
+    loginStatusMessage.innerHTML = "<p>you are not logged in. <a href=\"" + userLoginInfo.redirectUrl + "\">log in here to comment!</a></p>";
+  }
+}
+
+async function fetchLoginStatus() {
+  const response = await fetch("/authentication");
+  return await response.json();
+}
