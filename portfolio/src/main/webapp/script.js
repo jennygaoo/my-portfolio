@@ -91,18 +91,12 @@ function loadMap() {
   });
 
   fetchMapMarkers();
-  loadMapItem("Philz Coffee", 37.793949, -122.398062, "I like the Iced Coffee Rose!");
-  loadMapItem("Philz Coffee", 37.793949, -122.398062, "I like the Iced Coffee Rose!");
-  loadMapItem("Saint Frank Coffee", 37.779511, -122.410411, 
-              "The hot chocolate & cappuccino are superb");
-  loadMapItem("Stonemill Matcha", 37.764730, -122.421731, "I like the yuzu meringue");
-  loadMapItem("Four Barrel Coffee", 37.768055, -122.422117, "The lattes are spectacular!");
+  loadHardcodedMapItems();
 }
 
 async function fetchMapMarkers() {
   const response = await fetch("/mapmarkers");
   const mapMarkers = await response.json();
-  console.log(mapMarkers);
   mapMarkers.forEach((mapMarker) => {
     loadMapItem(mapMarker.itemName, mapMarker.latitude, mapMarker.longitude, mapMarker.content)
   });
@@ -122,6 +116,14 @@ function loadMapItem(itemName, latitude, longitude, itemDescription) {
   itemMarker.addListener("click", function(){
     itemInfoWindow.open(cafeMap, itemMarker);
   });
+}
+
+function loadHardcodedMapItems(){
+  loadMapItem("Philz Coffee", 37.793949, -122.398062, "I like the Iced Coffee Rose!");
+  loadMapItem("Saint Frank Coffee", 37.779511, -122.410411, 
+              "The hot chocolate & cappuccino are superb");
+  loadMapItem("Stonemill Matcha", 37.764730, -122.421731, "I like the yuzu meringue");
+  loadMapItem("Four Barrel Coffee", 37.768055, -122.422117, "The lattes are spectacular!");
 }
 
 function postMapMarker(itemName, latitude, longitude, content) {
@@ -148,7 +150,6 @@ function createMapMarkerForEdit(latitude, longitude){
       editMarker.setMap(null);
   });
 
-  console.log(editMarker);
   infoWindow.open(cafeMap, editMarker);
 }
 

@@ -20,6 +20,7 @@ import com.google.appengine.api.datastore.Query;
 import com.google.sps.data.MapMarker;
 import com.google.gson.Gson;
 import java.io.IOException;
+import static java.lang.Double.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.logging.Logger;
@@ -32,8 +33,13 @@ import org.jsoup.safety.Whitelist;
 
 @WebServlet("/mapmarkers")
 public class MapMarkerServlet extends HttpServlet {
+  private static double latitude;
+  private static double longitude;
   private static final Gson gson = new Gson();
   private static Logger log = Logger.getLogger("MapMarkerServlet");
+  private static String content;
+  private static String itemName;
+
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -47,8 +53,8 @@ public class MapMarkerServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) {
     String itemName = Jsoup.clean(request.getParameter("itemName"), Whitelist.none());
-    double latitude = Double.parseDouble(request.getParameter("latitude"));
-    double longitude = Double.parseDouble(request.getParameter("longitude"));
+    double latitude = parseDouble(request.getParameter("latitude"));
+    double longitude = parseDouble(request.getParameter("longitude"));
     String content = Jsoup.clean(request.getParameter("content"), Whitelist.none());
 
     MapMarker mapMarker = new MapMarker(itemName, latitude, longitude, content);
@@ -62,11 +68,11 @@ public class MapMarkerServlet extends HttpServlet {
     Query mapMarkerQuery = new Query("MapMarker");
     PreparedQuery results = datastore.prepare(mapMarkerQuery);
 
-    for (Entity entity : results.asIterable()) {
-      String itemName = (String) entity.getProperty("itemName");
-      double latitude = (double) entity.getProperty("latitude");
-      double longitude = (double) entity.getProperty("longitude");
-      String content = (String) entity.getProperty("content");
+    for (Entity mapMarkerEntity : results.asIterable()) {
+      itemName = (String) mapMarkerEntity.getProperty("itemName");
+      latitude = (double) mapMarkerEntity.getProperty("latitude");
+      longitude = (double) mapMarkerEntity.getProperty("longitude");
+      content = (String) mapMarkerEntity.getProperty("content");
 
       MapMarker mapMarker = new MapMarker(itemName, latitude, longitude, content);
       mapMarkers.add(mapMarker);
