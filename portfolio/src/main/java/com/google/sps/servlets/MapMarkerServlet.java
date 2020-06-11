@@ -33,12 +33,12 @@ import org.jsoup.safety.Whitelist;
 
 @WebServlet("/mapmarkers")
 public class MapMarkerServlet extends HttpServlet {
-  private static double latitude;
-  private static double longitude;
   private static final Gson gson = new Gson();
-  private static Logger log = Logger.getLogger("MapMarkerServlet");
   private static String content;
-  private static String itemName;
+  private static final String ITEM_NAME = "itemName";
+  private static final String CONTENT = "content";
+  private static final String LATITUDE = "latitude";
+  private static final String LONGITUDE = "longitude";
 
 
   @Override
@@ -52,13 +52,20 @@ public class MapMarkerServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) {
-    String itemName = Jsoup.clean(request.getParameter("itemName"), Whitelist.none());
-    double latitude = parseDouble(request.getParameter("latitude"));
-    double longitude = parseDouble(request.getParameter("longitude"));
-    String content = Jsoup.clean(request.getParameter("content"), Whitelist.none());
+    String itemName = Jsoup.clean(request.getParameter(ITEM_NAME), Whitelist.none());
+    double latitude = parseDouble(request.getParameter(LATITUDE));
+    double longitude = parseDouble(request.getParameter(LONGITUDE));
+    String content = Jsoup.clean(request.getParameter(CONTENT), Whitelist.none());
 
     MapMarker mapMarker = new MapMarker(itemName, latitude, longitude, content);
-    storeMapMarker(mapMarker);
+    Entity mapMarkerEntity = new Entity("MapMarker");
+    mapMarkerEntity.setProperty(ITEM_NAME, mapMarker.getItemName());
+    mapMarkerEntity.setProperty(LATITUDE, mapMarker.getLatitude());
+    mapMarkerEntity.setProperty(LONGITUDE, mapMarker.getLongitude());
+    mapMarkerEntity.setProperty(CONTENT, mapMarker.getContent());
+
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    datastore.put(mapMarkerEntity);
   }
 
   private Collection<MapMarker> getMapMarkers() {
@@ -69,25 +76,14 @@ public class MapMarkerServlet extends HttpServlet {
     PreparedQuery results = datastore.prepare(mapMarkerQuery);
 
     for (Entity mapMarkerEntity : results.asIterable()) {
-      itemName = (String) mapMarkerEntity.getProperty("itemName");
-      latitude = (double) mapMarkerEntity.getProperty("latitude");
-      longitude = (double) mapMarkerEntity.getProperty("longitude");
-      content = (String) mapMarkerEntity.getProperty("content");
+      String itemName = (String) mapMarkerEntity.getProperty(ITEM_NAME);
+      double latitude = (double) mapMarkerEntity.getProperty(LATITUDE);
+      double longitude = (double) mapMarkerEntity.getProperty(LONGITUDE);
+      String content = (String) mapMarkerEntity.getProperty(CONTENT);
 
       MapMarker mapMarker = new MapMarker(itemName, latitude, longitude, content);
       mapMarkers.add(mapMarker);
     }
     return mapMarkers;
-  }
-
-  public void storeMapMarker(MapMarker mapMarker) {
-    Entity mapMarkerEntity = new Entity("MapMarker");
-    mapMarkerEntity.setProperty("itemName", mapMarker.getItemName());
-    mapMarkerEntity.setProperty("latitude", mapMarker.getLatitude());
-    mapMarkerEntity.setProperty("longitude", mapMarker.getLongitude());
-    mapMarkerEntity.setProperty("content", mapMarker.getContent());
-
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    datastore.put(mapMarkerEntity);
   }
 }
