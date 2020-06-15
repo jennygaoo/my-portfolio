@@ -113,7 +113,7 @@ function loadMapItem(itemName, latitude, longitude, itemDescription) {
     content: "<h1>"+itemName+"</h1>"+"<p>"+itemDescription+"</p>"
   });
 
-  itemMarker.addListener("click", function(){
+  itemMarker.addListener("click", function() {
     itemInfoWindow.open(cafeMap, itemMarker);
   });
 }
