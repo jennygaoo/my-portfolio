@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+let editMarker;
+
 function randomizeRecipe() {
   // there are 4 recipes total
   const imageIndex = Math.floor(Math.random() * 4) + 1;
@@ -80,21 +82,30 @@ function deleteComment(comment) {
 
 function loadMap() {
   const sanFrancisco = {lat: 37.7749, lng: -122.4194};
-  const cafeMap = new google.maps.Map(
+  cafeMap = new google.maps.Map(
     document.getElementById("map"),
     {center: sanFrancisco, zoom: 12});
 
-  loadMapItem(cafeMap, "Philz Coffee", 37.793949, -122.398062, "I like the Iced Coffee Rose!");
-  loadMapItem(cafeMap, "Saint Frank Coffee", 37.779511, -122.410411, 
-              "The hot chocolate & cappuccino are superb");
-  loadMapItem(cafeMap, "Stonemill Matcha", 37.764730, -122.421731, "I like the yuzu meringue");
-  loadMapItem(cafeMap, "Four Barrel Coffee", 37.768055, -122.422117, "The lattes are spectacular!");
+  cafeMap.addListener("click", (event) => {
+    createMapMarkerForEdit(event.latLng.lat(), event.latLng.lng());
+  });
+
+  fetchMapMarkers();
+  loadHardcodedMapItems();
 }
 
-function loadMapItem(mapName, itemName, latitudeValue, longitudeValue, itemDescription) {
+async function fetchMapMarkers() {
+  const response = await fetch("/mapmarkers");
+  const mapMarkers = await response.json();
+  mapMarkers.forEach((mapMarker) => {
+    loadMapItem(mapMarker.itemName, mapMarker.latitude, mapMarker.longitude, mapMarker.content)
+  });
+}
+
+function loadMapItem(itemName, latitude, longitude, itemDescription) {
   const itemMarker = new google.maps.Marker({
-    position: {lat:latitudeValue, lng:longitudeValue},
-    map: mapName, 
+    position: {lat: latitude, lng: longitude},
+    map: cafeMap,
     title: itemName
   });
 
@@ -102,9 +113,66 @@ function loadMapItem(mapName, itemName, latitudeValue, longitudeValue, itemDescr
     content: "<h1>"+itemName+"</h1>"+"<p>"+itemDescription+"</p>"
   });
 
-  itemMarker.addListener('click', function(){
-    itemInfoWindow.open(mapName, itemMarker);
+  itemMarker.addListener("click", function() {
+    itemInfoWindow.open(cafeMap, itemMarker);
   });
+}
+
+function loadHardcodedMapItems(){
+  loadMapItem("Philz Coffee", 37.793949, -122.398062, "I like the Iced Coffee Rose!");
+  loadMapItem("Saint Frank Coffee", 37.779511, -122.410411, 
+              "The hot chocolate & cappuccino are superb");
+  loadMapItem("Stonemill Matcha", 37.764730, -122.421731, "I like the yuzu meringue");
+  loadMapItem("Four Barrel Coffee", 37.768055, -122.422117, "The lattes are spectacular!");
+}
+
+function postMapMarker(itemName, latitude, longitude, content) {
+  const params = new URLSearchParams();
+  params.append("itemName", itemName);
+  params.append("latitude", latitude);
+  params.append("longitude", longitude);
+  params.append("content", content);
+
+  fetch("/mapmarkers", {method:"POST", body:params});
+}
+
+function createMapMarkerForEdit(latitude, longitude){
+  // remove editable marker if one is already shown
+  if (editMarker) {
+    editMarker.setMap(null);
+  }
+
+  editMarker = new google.maps.Marker({position: {lat: latitude, lng: longitude}, map: cafeMap});
+
+  const infoWindow = new google.maps.InfoWindow({content: buildInfoWindowInput(latitude, longitude)});
+
+  google.maps.event.addListener(infoWindow, "closeclick", () => {
+      editMarker.setMap(null);
+  });
+
+  infoWindow.open(cafeMap, editMarker);
+}
+
+function buildInfoWindowInput(latitude, longitude) {
+  const titleBox = document.createElement("textarea");
+  const descriptionBox = document.createElement("textarea");
+  const submitButton = document.createElement("button");
+  submitButton.appendChild(document.createTextNode("Submit"));
+
+  submitButton.onclick = () => {
+    postMapMarker(titleBox.value, latitude, longitude, descriptionBox.value);
+    loadMapItem(titleBox.value, latitude, longitude, descriptionBox.value);
+    editMarker.setMap(null);
+  };
+
+  const entryBox = document.createElement("div");
+  entryBox.appendChild(titleBox);
+  entryBox.appendChild(document.createElement("br"));
+  entryBox.appendChild(descriptionBox);
+  entryBox.appendChild(document.createElement("br"));
+  entryBox.appendChild(submitButton);
+
+  return entryBox;
 }
 
 async function displayElement() {
