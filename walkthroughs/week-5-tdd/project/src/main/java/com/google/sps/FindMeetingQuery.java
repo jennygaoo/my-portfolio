@@ -26,6 +26,7 @@ import java.util.logging.Logger;
 public final class FindMeetingQuery {
   private static Logger log = Logger.getLogger("FindMeetingQuery");
 
+  //will use these later for manual testing
   private static final String PERSON_A = "Person A";
   private static final String PERSON_B = "Person B";
   private static final String PERSON_C = "Person C";
@@ -52,6 +53,8 @@ public final class FindMeetingQuery {
     }
 
     Collections.sort(eventsAsList, Event.ORDER_BY_START);
+
+    //printing event time range to check if ordering is correct
     for(Event event: eventsAsList){
       System.out.println(event.getWhen());
     }
