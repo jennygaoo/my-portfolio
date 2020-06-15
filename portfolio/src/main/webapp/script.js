@@ -28,7 +28,7 @@ async function predictImage() {
 
   // set up webcam
   const flip = true; // whether to flip the webcam
-  webcam = new tmImage.Webcam(/* width= */ 200, /*height= */ 200, flip);
+  webcam = new tmImage.Webcam(/* width= */ 200, /* height= */ 200, flip);
   await webcam.setup(); // request access to the webcam
   await webcam.play();
   window.requestAnimationFrame(updateAndPredict);
@@ -38,7 +38,6 @@ async function predictImage() {
   labelContainer = document.getElementById("image-prediction");
 }
 
-// better/more "meaningful" name for loop()?
 async function updateAndPredict() {
   webcam.update();
   await predict();
