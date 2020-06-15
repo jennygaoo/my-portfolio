@@ -14,10 +14,49 @@
 
 package com.google.sps;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.logging.Logger;
 
+//changed from public final class to private static
 public final class FindMeetingQuery {
+  private static Logger log = Logger.getLogger("FindMeetingQuery");
+
+  private static final String PERSON_A = "Person A";
+  private static final String PERSON_B = "Person B";
+  private static final String PERSON_C = "Person C";
+
+  private static final int TIME_0800AM = TimeRange.getTimeInMinutes(8, 0);
+  private static final int TIME_0830AM = TimeRange.getTimeInMinutes(8, 30);
+  private static final int TIME_0900AM = TimeRange.getTimeInMinutes(9, 0);
+  private static final int TIME_0930AM = TimeRange.getTimeInMinutes(9, 30);
+  private static final int TIME_1000AM = TimeRange.getTimeInMinutes(10, 0);
+  private static final int TIME_1100AM = TimeRange.getTimeInMinutes(11, 00);
+
+  private static final int DURATION_30_MINUTES = 30;
+  private static final int DURATION_60_MINUTES = 60;
+  private static final int DURATION_90_MINUTES = 90;
+  private static final int DURATION_1_HOUR = 60;
+  private static final int DURATION_2_HOUR = 120;
+
   public Collection<TimeRange> query(Collection<Event> events, MeetingRequest request) {
-    throw new UnsupportedOperationException("TODO: Implement this method.");
+
+    //Collections.sort() only takes in List, so must convert events to a list
+    List<Event> eventsAsList = new ArrayList<Event>();
+    for(Event event: events){
+      eventsAsList.add(event);
+    }
+
+    Collections.sort(eventsAsList, Event.ORDER_BY_START);
+    for(Event event: eventsAsList){
+      System.out.println(event.getWhen());
+    }
+
+    //return null because method is not finished
+    return null;
   }
 }
