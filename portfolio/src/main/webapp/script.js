@@ -12,9 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-const URL = "https://teachablemachine.withgoogle.com/models/8A06Q2Ycp/";
-
-let model, webcam, labelContainer, maxPredictions;
+let editMarker, model, webcam, labelContainer, maxPredictions;
+const URL = "https://teachablemachine.withgoogle.com/models/mSTKdNc_2/";
 
 // load image model, set up webcam
 async function predictImage() {
@@ -29,28 +28,27 @@ async function predictImage() {
 
   // set up webcam
   const flip = true; // whether to flip the webcam
-  webcam = new tmImage.Webcam(200, 200, flip);
+  webcam = new tmImage.Webcam(/* width= */ 200, /*height= */ 200, flip);
   await webcam.setup(); // request access to the webcam
   await webcam.play();
-  window.requestAnimationFrame(loop);
+  window.requestAnimationFrame(updateAndPredict);
 
   // append webcam and prediction to DOM
   document.getElementById("webcam-container").appendChild(webcam.canvas);
   labelContainer = document.getElementById("image-prediction");
-  for (let i = 0; i < maxPredictions; i++) {
-    labelContainer.appendChild(document.createElement("div"));
-  }
 }
+
 // better/more "meaningful" name for loop()?
-async function loop() {
+async function updateAndPredict() {
   webcam.update();
   await predict();
-  window.requestAnimationFrame(loop);
+  window.requestAnimationFrame(updateAndPredict);
 }
 
 async function predict() {
   const prediction = await model.predict(webcam.canvas);
   for (let i = 0; i < maxPredictions; i++) {
+    labelContainer.appendChild(document.createElement("div"));
     const classPrediction = 
         prediction[i].className + ": " + prediction[i].probability.toFixed(2);
     labelContainer.childNodes[i].innerHTML = classPrediction;
@@ -125,21 +123,30 @@ function deleteComment(comment) {
 
 function loadMap() {
   const sanFrancisco = {lat: 37.7749, lng: -122.4194};
-  const cafeMap = new google.maps.Map(
+  cafeMap = new google.maps.Map(
     document.getElementById("map"),
     {center: sanFrancisco, zoom: 12});
 
-  loadMapItem(cafeMap, "Philz Coffee", 37.793949, -122.398062, "I like the Iced Coffee Rose!");
-  loadMapItem(cafeMap, "Saint Frank Coffee", 37.779511, -122.410411, 
-              "The hot chocolate & cappuccino are superb");
-  loadMapItem(cafeMap, "Stonemill Matcha", 37.764730, -122.421731, "I like the yuzu meringue");
-  loadMapItem(cafeMap, "Four Barrel Coffee", 37.768055, -122.422117, "The lattes are spectacular!");
+  cafeMap.addListener("click", (event) => {
+    createMapMarkerForEdit(event.latLng.lat(), event.latLng.lng());
+  });
+
+  fetchMapMarkers();
+  loadHardcodedMapItems();
 }
 
-function loadMapItem(mapName, itemName, latitudeValue, longitudeValue, itemDescription) {
+async function fetchMapMarkers() {
+  const response = await fetch("/mapmarkers");
+  const mapMarkers = await response.json();
+  mapMarkers.forEach((mapMarker) => {
+    loadMapItem(mapMarker.itemName, mapMarker.latitude, mapMarker.longitude, mapMarker.content)
+  });
+}
+
+function loadMapItem(itemName, latitude, longitude, itemDescription) {
   const itemMarker = new google.maps.Marker({
-    position: {lat:latitudeValue, lng:longitudeValue},
-    map: mapName, 
+    position: {lat: latitude, lng: longitude},
+    map: cafeMap,
     title: itemName
   });
 
@@ -147,9 +154,66 @@ function loadMapItem(mapName, itemName, latitudeValue, longitudeValue, itemDescr
     content: "<h1>"+itemName+"</h1>"+"<p>"+itemDescription+"</p>"
   });
 
-  itemMarker.addListener('click', function(){
-    itemInfoWindow.open(mapName, itemMarker);
+  itemMarker.addListener("click", function() {
+    itemInfoWindow.open(cafeMap, itemMarker);
   });
+}
+
+function loadHardcodedMapItems(){
+  loadMapItem("Philz Coffee", 37.793949, -122.398062, "I like the Iced Coffee Rose!");
+  loadMapItem("Saint Frank Coffee", 37.779511, -122.410411, 
+              "The hot chocolate & cappuccino are superb");
+  loadMapItem("Stonemill Matcha", 37.764730, -122.421731, "I like the yuzu meringue");
+  loadMapItem("Four Barrel Coffee", 37.768055, -122.422117, "The lattes are spectacular!");
+}
+
+function postMapMarker(itemName, latitude, longitude, content) {
+  const params = new URLSearchParams();
+  params.append("itemName", itemName);
+  params.append("latitude", latitude);
+  params.append("longitude", longitude);
+  params.append("content", content);
+
+  fetch("/mapmarkers", {method:"POST", body:params});
+}
+
+function createMapMarkerForEdit(latitude, longitude){
+  // remove editable marker if one is already shown
+  if (editMarker) {
+    editMarker.setMap(null);
+  }
+
+  editMarker = new google.maps.Marker({position: {lat: latitude, lng: longitude}, map: cafeMap});
+
+  const infoWindow = new google.maps.InfoWindow({content: buildInfoWindowInput(latitude, longitude)});
+
+  google.maps.event.addListener(infoWindow, "closeclick", () => {
+      editMarker.setMap(null);
+  });
+
+  infoWindow.open(cafeMap, editMarker);
+}
+
+function buildInfoWindowInput(latitude, longitude) {
+  const titleBox = document.createElement("textarea");
+  const descriptionBox = document.createElement("textarea");
+  const submitButton = document.createElement("button");
+  submitButton.appendChild(document.createTextNode("Submit"));
+
+  submitButton.onclick = () => {
+    postMapMarker(titleBox.value, latitude, longitude, descriptionBox.value);
+    loadMapItem(titleBox.value, latitude, longitude, descriptionBox.value);
+    editMarker.setMap(null);
+  };
+
+  const entryBox = document.createElement("div");
+  entryBox.appendChild(titleBox);
+  entryBox.appendChild(document.createElement("br"));
+  entryBox.appendChild(descriptionBox);
+  entryBox.appendChild(document.createElement("br"));
+  entryBox.appendChild(submitButton);
+
+  return entryBox;
 }
 
 async function displayElement() {
