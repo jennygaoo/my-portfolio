@@ -57,7 +57,6 @@ public final class FindMeetingQuery {
          eventsAsTimeRange.add(TimeRange.fromStartDuration(0, 1440));
          return eventsAsTimeRange;
       }
-    }
 
     //filter out events that don't involve required attendees
     List<Event> filteredEvents = filterEvents(events, request);
