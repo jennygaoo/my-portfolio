@@ -48,20 +48,39 @@ public final class FindMeetingQuery {
   public Collection<TimeRange> query(Collection<Event> events, MeetingRequest request) {
     List<TimeRange> eventsAsTimeRange = new ArrayList<TimeRange>();
 
-    //if there are no events, return the entire day
-    if (events.isEmpty()){
-      eventsAsTimeRange.add(TimeRange.fromStartDuration(0, 1440));
-      return eventsAsTimeRange;
+    // if there are no events & the request less than an entire day, return the entire day 
+    if (events.isEmpty()) {
+      if (request.getDuration() > TimeRange.WHOLE_DAY.duration()) {
+        // return empty arraylist
+         return eventsAsTimeRange;
+      } else {
+         eventsAsTimeRange.add(TimeRange.fromStartDuration(0, 1440));
+         return eventsAsTimeRange;
+      }
     }
 
-    //make list of event objects in order to get attendees later
-    List<Event> eventsAsList = getSortedTimeRanges(events);
+    //filter out events that don't involve required attendees
+    List<Event> filteredEvents = filterEvents(events, request);
+
+    // make list of event objects in order to get attendees later
+    List<Event> eventsAsList = getSortedTimeRanges(filteredEvents);
     
-    throw new UnsupportedOperationException("TODO: represent events when any" +
-        "required person is unavailable. Then get TimeRanges when everyone is available");
+    throw new UnsupportedOperationException("TODO: continue building schedule");
   }
 
-  public List<Event> getSortedTimeRanges(Collection<Event> events) {
+  public List<Event> filterEvents(Collection<Event> events, MeetingRequest request) {
+    List<Event> filteredEvents = new ArrayList<Event>();
+    Collection<String> requiredAttendees = request.getAttendees();
+
+    for(Event event: events) {
+      if (event.getAttendees().containsAll(requiredAttendees)) {
+        filteredEvents.add(event);
+      }
+    }
+    return filteredEvents;
+  }
+
+  public List<Event> getSortedTimeRanges(List<Event> events) {
     // Collections.sort() only takes in List, so must convert events to a list
     List<Event> eventsAsList= new ArrayList<Event>();
     for (Event event: events) {
@@ -70,12 +89,12 @@ public final class FindMeetingQuery {
 
     Collections.sort(eventsAsList, Event.ORDER_BY_START);
 
-    //logging eventsAsList to check ordering
-    for (Event event: eventsAsList) {
-      String eventTimeAsString = event.getWhen().toString();
-      log.info(eventTimeAsString);
-    }
-
+    // logging eventsAsList to check ordering
+    // for (Event event: eventsAsList) {
+    //   String eventTimeAsString = event.getWhen().toString();
+    //   log.info(eventTimeAsString);
+    // }
     return eventsAsList;
   }
+
 }
