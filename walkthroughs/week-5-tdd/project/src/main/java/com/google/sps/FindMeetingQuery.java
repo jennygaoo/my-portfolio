@@ -46,20 +46,23 @@ public final class FindMeetingQuery {
 
   public Collection<TimeRange> query(Collection<Event> events, MeetingRequest request) {
 
-    //Collections.sort() only takes in List, so must convert events to a list
-    List<Event> eventsAsList = new ArrayList<Event>();
-    for(Event event: events){
-      eventsAsList.add(event);
+    // Collections.sort() only takes in List, so must convert events to a list
+    List<TimeRange> eventsAsTimeRanges = new ArrayList<TimeRange>();
+    for(Event event: events) {
+      eventsAsTimeRanges.add(event.getWhen());
     }
 
-    Collections.sort(eventsAsList, Event.ORDER_BY_START);
+    Collections.sort(eventsAsTimeRanges, TimeRange.ORDER_BY_START);
 
-    //printing event time range to check if ordering is correct
-    for(Event event: eventsAsList){
-      System.out.println(event.getWhen());
+    // printing event time range to check if ordering is correct
+    for(TimeRange eventTimeRange: eventsAsTimeRanges) {
+      String eventTimeRangeString = eventTimeRange.toString();
+      log.info(eventTimeRangeString);
     }
+    // TODO: reprsent events when any required person is unavailable
+    // TODO: from ^, get TimeRanges everyone is available 
 
-    //return null because method is not finished
+    // return null because method is not finished
     return null;
   }
 }
