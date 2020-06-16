@@ -57,6 +57,7 @@ public final class FindMeetingQuery {
          eventsAsTimeRange.add(TimeRange.fromStartDuration(0, 1440));
          return eventsAsTimeRange;
       }
+    }
 
     //filter out events that don't involve required attendees
     List<Event> filteredEvents = filterEvents(events, request);
@@ -65,6 +66,7 @@ public final class FindMeetingQuery {
     List<Event> eventsAsList = getSortedTimeRanges(filteredEvents);
     
     throw new UnsupportedOperationException("TODO: continue building schedule");
+
   }
 
   public List<Event> filterEvents(Collection<Event> events, MeetingRequest request) {
