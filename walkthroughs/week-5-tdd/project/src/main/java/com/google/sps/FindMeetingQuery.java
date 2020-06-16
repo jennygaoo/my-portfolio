@@ -49,7 +49,7 @@ public final class FindMeetingQuery {
     List<TimeRange> eventsAsTimeRange = new ArrayList<TimeRange>();
 
     //if there are no events, return the entire day
-    if (events.isEmpty()){
+    if (events.isEmpty()) {
       eventsAsTimeRange.add(TimeRange.fromStartDuration(0, 1440));
       return eventsAsTimeRange;
     }
