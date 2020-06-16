@@ -69,6 +69,16 @@ public final class Event {
   }
 
   /**
+   * A comparator for sorting ranges by their start time in ascending order.
+   */
+  public static final Comparator<Event> ORDER_BY_START = new Comparator<Event>() {
+    @Override
+    public int compare(Event a, Event b) {
+      return Long.compare(a.when.start(), b.when.start());
+    }
+  };
+
+  /**
    * Returns a read-only set of required attendees for this event.
    */
   public Set<String> getAttendees() {

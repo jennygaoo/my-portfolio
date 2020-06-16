@@ -24,6 +24,7 @@ import java.util.logging.Logger;
 
 //changed from public final class to private static
 public final class FindMeetingQuery {
+  //TODO: class name input for Logger.getLogger() instead of manually inputting it
   private static Logger log = Logger.getLogger("FindMeetingQuery");
 
   //will use these later for manual testing
@@ -45,22 +46,36 @@ public final class FindMeetingQuery {
   private static final int DURATION_2_HOUR = 120;
 
   public Collection<TimeRange> query(Collection<Event> events, MeetingRequest request) {
+    List<TimeRange> eventsAsTimeRange = new ArrayList<TimeRange>();
 
-    // Collections.sort() only takes in List, so must convert events to a list
-    List<TimeRange> eventsAsTimeRanges = new ArrayList<TimeRange>();
-    for(Event event: events) {
-      eventsAsTimeRanges.add(event.getWhen());
+    //if there are no events, return the entire day
+    if (events.isEmpty()){
+      eventsAsTimeRange.add(TimeRange.fromStartDuration(0, 1440));
+      return eventsAsTimeRange;
     }
 
-    Collections.sort(eventsAsTimeRanges, TimeRange.ORDER_BY_START);
-
-    // printing event time range to check if ordering is correct
-    for(TimeRange eventTimeRange: eventsAsTimeRanges) {
-      String eventTimeRangeString = eventTimeRange.toString();
-      log.info(eventTimeRangeString);
-    }
-
+    //make list of event objects in order to get attendees later
+    List<Event> eventsAsList = getSortedTimeRanges(events);
+    
     throw new UnsupportedOperationException("TODO: represent events when any" +
         "required person is unavailable. Then get TimeRanges when everyone is available");
+  }
+
+  public List<Event> getSortedTimeRanges(Collection<Event> events) {
+    // Collections.sort() only takes in List, so must convert events to a list
+    List<Event> eventsAsList= new ArrayList<Event>();
+    for (Event event: events) {
+      eventsAsList.add(event);
+    }
+
+    Collections.sort(eventsAsList, Event.ORDER_BY_START);
+
+    //logging eventsAsList to check ordering
+    for (Event event: eventsAsList) {
+      String eventTimeAsString = event.getWhen().toString();
+      log.info(eventTimeAsString);
+    }
+
+    return eventsAsList;
   }
 }
