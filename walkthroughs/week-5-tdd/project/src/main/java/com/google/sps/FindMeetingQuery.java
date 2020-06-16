@@ -59,10 +59,8 @@ public final class FindMeetingQuery {
       String eventTimeRangeString = eventTimeRange.toString();
       log.info(eventTimeRangeString);
     }
-    // TODO: reprsent events when any required person is unavailable
-    // TODO: from ^, get TimeRanges everyone is available 
 
-    // return null because method is not finished
-    return null;
+    throw new UnsupportedOperationException("TODO: represent events when any" +
+        "required person is unavailable. Then get TimeRanges when everyone is available");
   }
 }
