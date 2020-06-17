@@ -28,6 +28,9 @@ public final class FindMeetingQuery {
   private static Logger log = Logger.getLogger("FindMeetingQuery");
 
   //will use these later for manual testing
+  public static final int START_OF_DAY = TimeRange.getTimeInMinutes(0, 0);
+  public static final int END_OF_DAY = TimeRange.getTimeInMinutes(23, 59);
+  
   private static final String PERSON_A = "Person A";
   private static final String PERSON_B = "Person B";
   private static final String PERSON_C = "Person C";
@@ -63,20 +66,30 @@ public final class FindMeetingQuery {
     List<Event> filteredEvents = filterEvents(events, request);
 
     // make list of event objects in order to get attendees later
-    List<Event> eventsAsList = getSortedTimeRanges(filteredEvents);
-    
-    throw new UnsupportedOperationException("TODO: continue building schedule");
+    List<Event> eventsAsSortedList = getSortedTimeRanges(filteredEvents);
 
+    //flatten events to TimeRanges representing when any required person is unavailable
+    List<TimeRange> unavailableTimeRanges = getUnavailableTimeRanges(eventsAsSortedList);
+
+    //use unavailableTimeRanges to find available time ranges
+    // List<TimeRange> availableTimeRanges = getAvailableTimeRanges(unavailableTimeRanges);
+
+    throw new UnsupportedOperationException("TODO: continue building schedule");
   }
 
   public List<Event> filterEvents(Collection<Event> events, MeetingRequest request) {
     List<Event> filteredEvents = new ArrayList<Event>();
     Collection<String> requiredAttendees = request.getAttendees();
 
-    for(Event event: events) {
-      if (event.getAttendees().containsAll(requiredAttendees)) {
-        filteredEvents.add(event);
+    //not the most efficient way, but it works
+    for (Event event: events) {
+      Collection<String> eventAttendees = event.getAttendees();
+      for (String attendee: eventAttendees) {
+        if (requiredAttendees.contains(attendee)) {
+          filteredEvents.add(event);
+        }
       }
+      
     }
     return filteredEvents;
   }
@@ -87,15 +100,32 @@ public final class FindMeetingQuery {
     for (Event event: events) {
       eventsAsList.add(event);
     }
-
     Collections.sort(eventsAsList, Event.ORDER_BY_START);
-
-    // logging eventsAsList to check ordering
-    // for (Event event: eventsAsList) {
-    //   String eventTimeAsString = event.getWhen().toString();
-    //   log.info(eventTimeAsString);
-    // }
     return eventsAsList;
   }
 
+  public List<TimeRange> getUnavailableTimeRanges(List<Event> events) {
+    List<TimeRange> unavailableTimeRanges = new ArrayList<TimeRange>();
+    List<TimeRange> eventsAsTimeRanges = new ArrayList<TimeRange>();
+
+    for (Event event: events) {
+      eventsAsTimeRanges.add(event.getWhen());
+    }
+
+    //very brute-force way
+    for (TimeRange timeRange_1: eventsAsTimeRanges) {
+      for (TimeRange timeRange_2: eventsAsTimeRanges)  {
+        if (!(timeRange_1.equals(timeRange_2))) {
+          if((timeRange_1.overlaps(timeRange_2))) {
+            // ensure no double-counting timeRanges
+            if(!(unavailableTimeRanges.contains(timeRange_1))){
+              unavailableTimeRanges.add(timeRange_1);
+              unavailableTimeRanges.add(timeRange_2);
+            }
+          }
+        }
+      }
+    }
+    return unavailableTimeRanges;
+  }
 }
