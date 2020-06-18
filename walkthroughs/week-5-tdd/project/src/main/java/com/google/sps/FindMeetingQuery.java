@@ -112,20 +112,61 @@ public final class FindMeetingQuery {
       eventsAsTimeRanges.add(event.getWhen());
     }
 
-    //very brute-force way
+    //case 1: events that do not overlap
+    for (TimeRange timeRange_1: eventsAsTimeRanges) {
+      boolean timeRangesOverlap = false;
+      for (TimeRange timeRange_2: eventsAsTimeRanges)  {
+        if (!(timeRange_1.equals(timeRange_2))) {
+          if ((timeRange_1.overlaps(timeRange_2))) {
+            timeRangesOverlap = true;
+          }
+        }
+      }
+      if (timeRangesOverlap == false) {
+         // ensure no double-counting timeRanges
+        if (!(unavailableTimeRanges.contains(timeRange_1))){
+          unavailableTimeRanges.add(timeRange_1);
+        }
+      }
+    }
+
+    //very brute-force way to cover overlapping time ranges
     for (TimeRange timeRange_1: eventsAsTimeRanges) {
       for (TimeRange timeRange_2: eventsAsTimeRanges)  {
         if (!(timeRange_1.equals(timeRange_2))) {
-          if((timeRange_1.overlaps(timeRange_2))) {
-            // ensure no double-counting timeRanges
-            if(!(unavailableTimeRanges.contains(timeRange_1))){
-              unavailableTimeRanges.add(timeRange_1);
-              unavailableTimeRanges.add(timeRange_2);
+          if ((timeRange_1.overlaps(timeRange_2))) {
+
+            // case 2: "regular" overlapping events
+            int timeR2Start = timeRange_2.start();
+            int timeR2End = timeRange_2.end();
+
+            //TODO: clean up the if statement below. basically check if 
+            //timeRange_1 starts before and ends during timeRange_2
+            if((timeRange_1.contains(timeR2Start)) && (!(timeRange_1.contains(timeR2End)))) {
+
+              TimeRange newTimeRange = TimeRange.fromStartEnd(timeRange_1.start(), timeR2End, false);
+              unavailableTimeRanges.add(newTimeRange);
+            }
+
+            // case 3: nested events
+            else if (timeRange_1.contains(timeRange_2)) {
+                unavailableTimeRanges.add(timeRange_1);
+              }
             }
           }
         }
       }
-    }
     return unavailableTimeRanges;
+  }
+
+  public List<TimeRange> getAvailableTimeRanges(List<TimeRange> unavailableTimeRanges) {
+      //"inverts" unavailableTimeRanges
+      List<TimeRange> availableTimeRanges = new ArrayList<TimeRange>();
+      for(TimeRange timeRange: unavailableTimeRanges) {
+        // availableStartTime = 
+        // availableEndTime = 
+        // availableTimeRanges.add();
+      }
+    throw new UnsupportedOperationException("TODO: continue building this function");
   }
 }
