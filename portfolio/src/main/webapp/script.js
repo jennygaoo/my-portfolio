@@ -12,7 +12,47 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-let editMarker;
+let editMarker, model, webcam, labelContainer, maxPredictions;
+const URL = "https://teachablemachine.withgoogle.com/models/mSTKdNc_2/";
+
+// load image model, set up webcam
+async function predictImage() {
+  const modelURL = URL + "model.json";
+  const metadataURL = URL + "metadata.json";
+
+  // load model, metadata
+  model = await tmImage.load(modelURL, metadataURL);
+  // Model can predict what is seen by webcam
+  // either as Squidward or Spongebob
+  maxPredictions = model.getTotalClasses();
+
+  // set up webcam
+  const flip = true; // whether to flip the webcam
+  webcam = new tmImage.Webcam(/* width= */ 200, /* height= */ 200, flip);
+  await webcam.setup(); // request access to the webcam
+  await webcam.play();
+  window.requestAnimationFrame(updateAndPredict);
+
+  // append webcam and prediction to DOM
+  document.getElementById("webcam-container").appendChild(webcam.canvas);
+  labelContainer = document.getElementById("image-prediction");
+}
+
+async function updateAndPredict() {
+  webcam.update();
+  await predict();
+  window.requestAnimationFrame(updateAndPredict);
+}
+
+async function predict() {
+  const prediction = await model.predict(webcam.canvas);
+  for (let i = 0; i < maxPredictions; i++) {
+    labelContainer.appendChild(document.createElement("div"));
+    const classPrediction = 
+        prediction[i].className + ": " + prediction[i].probability.toFixed(2);
+    labelContainer.childNodes[i].innerHTML = classPrediction;
+  }
+}
 
 function randomizeRecipe() {
   // there are 4 recipes total
