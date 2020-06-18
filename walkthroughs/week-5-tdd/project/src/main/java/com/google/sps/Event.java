@@ -16,6 +16,7 @@ package com.google.sps;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -66,6 +67,16 @@ public final class Event {
   public TimeRange getWhen() {
     return when;
   }
+
+  /**
+   * A comparator for sorting ranges by their start time in ascending order.
+   */
+  public static final Comparator<Event> ORDER_BY_START = new Comparator<Event>() {
+    @Override
+    public int compare(Event a, Event b) {
+      return Long.compare(a.when.start(), b.when.start());
+    }
+  };
 
   /**
    * Returns a read-only set of required attendees for this event.
