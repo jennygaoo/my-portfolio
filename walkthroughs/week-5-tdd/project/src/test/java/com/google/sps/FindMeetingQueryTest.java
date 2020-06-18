@@ -82,6 +82,22 @@ public final class FindMeetingQueryTest {
   }
 
   @Test
+  public void eventSplitsRestriction() {
+    // The event should split the day into two options (before and after the event).
+    Collection<Event> events = Arrays.asList(new Event("Event 1",
+        TimeRange.fromStartDuration(TIME_0830AM, DURATION_30_MINUTES), Arrays.asList(PERSON_A)));
+
+    MeetingRequest request = new MeetingRequest(Arrays.asList(PERSON_A), DURATION_30_MINUTES);
+
+    Collection<TimeRange> actual = query.query(events, request);
+    Collection<TimeRange> expected =
+        Arrays.asList(TimeRange.fromStartEnd(TimeRange.START_OF_DAY, TIME_0830AM, false),
+            TimeRange.fromStartEnd(TIME_0900AM, TimeRange.END_OF_DAY, true));
+
+    Assert.assertEquals(expected, actual);
+  }
+
+  @Test
   public void everyAttendeeIsConsidered() {
     // Have each person have different events. We should see two options because each person has
     // split the restricted times.
@@ -135,7 +151,7 @@ public final class FindMeetingQueryTest {
     Assert.assertEquals(expected, actual);
   }
 
-  //test i'm writing
+  //test I wrote
   @Test
   public void optionalAttendeeAllDayEvent() {
     // The optional attendee is not free the entire day, so ignore their availability
@@ -373,7 +389,7 @@ public final class FindMeetingQueryTest {
     Assert.assertEquals(expected, actual);
   }
 
-  //Test I wrote
+  //test I wrote
   @Test
   public void onlyOptionalAttendees() {
     // No mandatory attendees, just two optional attendees with several gaps in their schedules.
