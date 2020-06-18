@@ -406,8 +406,7 @@ public final class FindMeetingQueryTest {
   //test I wrote
   @Test
   public void onlyOptionalAttendeesNoGaps() {
-    // No mandatory attendees, just two optional attendees with no gaps in their schedules.
-    // no time should be returned. 
+    // No mandatory attendees, just two optional attendees with no gaps in their schedules. No time should be returned. 
     // Optional: |---------------A---------------|
     // Optional: |---------------B---------------|
     // Day     : |-------------------------------|
