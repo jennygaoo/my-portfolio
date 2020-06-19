@@ -37,31 +37,76 @@ public final class FindMeetingQuery {
          return eventsAsTimeRange;
       }
     }
+    // convert events to list representation
+    List<Event> eventsAsList = new ArrayList<Event>();
+    for (Event event: events) {
+      eventsAsList.add(event);
+    }
+    
+    // if there are no mandatory attendees, make optional attendees mandatory attendees
+    if (request.getAttendees().isEmpty()) {
+      List<String> optionalAttendees = new ArrayList<String>();
+      for(String optionalAttendee: request.getOptionalAttendees()) {
+        optionalAttendees.add(optionalAttendee);
+      }
+      MeetingRequest requestOptionalAttendees = new MeetingRequest(optionalAttendees, request.getDuration());
+      List<TimeRange> optionalAttendeesTimeRanges = getTimeRanges(eventsAsList, requestOptionalAttendees, false);
+      return optionalAttendeesTimeRanges;
+    }
 
-    // filter out events that don't involve required attendees
-    List<Event> filteredEvents = filterEvents(events, request);
+    // get time ranges with both required and optional attendees
+    
+    List<TimeRange> allAttendeesTimeRanges = new ArrayList<TimeRange>();
+    if (!(request.getOptionalAttendees().isEmpty())) {
+      // create new MeetingRequest object with both optional and required attendees
+      // must do this ^ because you can't modify the the current attendees
+      List<String> combinedAttendees = new ArrayList<String>();
+      combinedAttendees.addAll(request.getAttendees());
+      combinedAttendees.addAll(request.getOptionalAttendees());
 
-    if (filteredEvents.isEmpty()){
+      MeetingRequest requestWithOptionalAttendees = new MeetingRequest(combinedAttendees, request.getDuration());
+      allAttendeesTimeRanges = getTimeRanges(eventsAsList, requestWithOptionalAttendees, true);
+    } 
+
+    // get time ranges with only required attendees
+    List<Event> filteredEvents = filterEvents(eventsAsList, request);  
+
+    // if there are no events and no optional attendees
+    if (filteredEvents.isEmpty() && allAttendeesTimeRanges.isEmpty()){
       eventsAsTimeRange.add(TimeRange.fromStartDuration(0, 1440));
       return eventsAsTimeRange;
     }
-    
-    // sort events
-    Collections.sort(filteredEvents, Event.ORDER_BY_START);
-   
-    // flatten events to TimeRanges representing when any required person is unavailable
-    List<TimeRange> unavailableTimeRanges = getUnavailableTimeRanges(filteredEvents);
 
-    // use unavailableTimeRanges to find available time ranges
-    List<TimeRange> availableTimeRanges = getAvailableTimeRanges(unavailableTimeRanges);
-
-    // check if there's enough time to hold meeting
-    List<TimeRange> sufficientTimeRanges = getSufficientTimeRanges(availableTimeRanges, request);
-
-    return sufficientTimeRanges;
+    List<TimeRange> requiredAttendeesTimeRanges = new ArrayList<TimeRange>();
+    requiredAttendeesTimeRanges = getTimeRanges(filteredEvents, request, true);
+  
+    // if you can schedule in a meeting with optional attendees, select those
+    // otherwise, return time ranges with only required attendees
+    if (! (allAttendeesTimeRanges.isEmpty())) {
+      return allAttendeesTimeRanges;
+    } else {
+      return requiredAttendeesTimeRanges;
+    }
   }
 
-  public List<Event> filterEvents(Collection<Event> events, MeetingRequest request) {
+  public List<TimeRange> getTimeRanges(List<Event> events, MeetingRequest request, boolean areThereRequiredAttendees) {
+    
+    Collections.sort(events, Event.ORDER_BY_START);
+   
+    List<TimeRange> unavailableTimeRanges = getUnavailableTimeRanges(events);
+
+    List<TimeRange> availableTimeRanges = getAvailableTimeRanges(unavailableTimeRanges);
+
+    if (areThereRequiredAttendees) {
+      List<TimeRange> sufficientTimeRanges = getSufficientTimeRanges(availableTimeRanges, request);
+      return sufficientTimeRanges;
+    } else {
+      // if no required attendees, return all available time slots
+      return availableTimeRanges;
+    }
+  }
+
+  public List<Event> filterEvents(List<Event> events, MeetingRequest request) {
     List<Event> filteredEvents = new ArrayList<Event>();
     Collection<String> requiredAttendees = request.getAttendees();
 
@@ -76,6 +121,7 @@ public final class FindMeetingQuery {
     return filteredEvents;
   }
 
+  // TODO: could make function more complex for multiple overlapping events
   public List<TimeRange> getUnavailableTimeRanges(List<Event> events) {
     List<TimeRange> unavailableTimeRanges = new ArrayList<TimeRange>();
     List<TimeRange> eventsAsTimeRanges = new ArrayList<TimeRange>();
@@ -91,28 +137,38 @@ public final class FindMeetingQuery {
     }
 
     // time range objects are ordered, so you can compare them by order
-    for (int i=0; i<=eventsAsTimeRanges.size()-2; i++) {
+    for (int i = 0; i <= eventsAsTimeRanges.size()-2; i++) {
       TimeRange earlierTimeRange = eventsAsTimeRanges.get(i);
-      TimeRange laterTimeRange = eventsAsTimeRanges.get(i+1);
+      TimeRange laterTimeRange = eventsAsTimeRanges.get(i + 1);
 
       if (earlierTimeRange.overlaps(laterTimeRange)) { 
         int laterTRStart = laterTimeRange.start();
         int laterTREnd = laterTimeRange.end();
 
-        // case 1: "regular" overlapping events 
+        // CASE 1: "regular" overlapping events 
         if (earlierTimeRange.contains(laterTRStart) && (! earlierTimeRange.contains(laterTREnd))) {
           TimeRange newTimeRange = TimeRange.fromStartEnd(earlierTimeRange.start(), laterTREnd, false);
           unavailableTimeRanges.add(newTimeRange);
         } else if (earlierTimeRange.contains(laterTimeRange)) {
-          // case 2: nested events
+          // CASE 2: nested events
           unavailableTimeRanges.add(earlierTimeRange);
         }
       } else {
-        // case 3: non-overlapping events
-        unavailableTimeRanges.add(earlierTimeRange);
+        // CASE 3: non-overlapping events
+        if (unavailableTimeRanges.size() >= 1) {
+          // make sure that last unavailableTimeRanges object does not overlap
+          if (!(unavailableTimeRanges.get(unavailableTimeRanges.size()-1).contains(laterTimeRange.end()))) {
+            unavailableTimeRanges.add(earlierTimeRange);
+          }
+        } else{
+          unavailableTimeRanges.add(earlierTimeRange);
+        }
         // be sure to account for last time range object
-        if (i==eventsAsTimeRanges.size()-2) {
-          unavailableTimeRanges.add(laterTimeRange);
+        if (i == eventsAsTimeRanges.size()-2) { 
+          // make sure that last unavailableTimeRanges object does not overlap
+          if (!(unavailableTimeRanges.get(unavailableTimeRanges.size()-1).contains(laterTimeRange.end()))) {
+            unavailableTimeRanges.add(laterTimeRange);
+          }
         }
       }
     }
@@ -128,10 +184,10 @@ public final class FindMeetingQuery {
     for (TimeRange timeRange: unavailableTimeRanges) {
       int unavailableStartTime = timeRange.start();
       int unavailableEndTime = timeRange.end();
-    
+
       // split day up into two options, before and after the event.
       // if there is an existing "after" section from a previous event, break it up
-      if (unavailableStartTime > earliestStartTime) {
+      if (unavailableStartTime >= earliestStartTime && unavailableStartTime > TimeRange.START_OF_DAY) {
         // this "before" section also serves as the previous day's "after" section
         TimeRange beforeAvailableTimeRange = TimeRange.fromStartEnd(earliestStartTime, unavailableStartTime, false);
         availableTimeRanges.add(beforeAvailableTimeRange);

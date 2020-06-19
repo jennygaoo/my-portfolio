@@ -124,34 +124,7 @@ public final class FindMeetingQueryTest {
     Assert.assertEquals(expected, actual);
   }
 
-  @Test
-  public void everyAttendeeIsConsidered() {
-    // Have each person have different events. We should see three options because each person has
-    // split the restricted times.
-    //
-    // Events  :       |--A--|     |--B--|
-    // Day     : |-----------------------------|
-    // Options : |--1--|     |--2--|     |--3--|
-
-    Collection<Event> events = Arrays.asList(
-        new Event("Event 1", TimeRange.fromStartDuration(TIME_0800AM, DURATION_30_MINUTES),
-            Arrays.asList(PERSON_A)),
-        new Event("Event 2", TimeRange.fromStartDuration(TIME_0900AM, DURATION_30_MINUTES),
-            Arrays.asList(PERSON_B)));
-
-    MeetingRequest request =
-        new MeetingRequest(Arrays.asList(PERSON_A, PERSON_B), DURATION_30_MINUTES);
-
-    Collection<TimeRange> actual = query.query(events, request);
-    Collection<TimeRange> expected =
-        Arrays.asList(TimeRange.fromStartEnd(TimeRange.START_OF_DAY, TIME_0800AM, false),
-            TimeRange.fromStartEnd(TIME_0830AM, TIME_0900AM, false),
-            TimeRange.fromStartEnd(TIME_0930AM, TimeRange.END_OF_DAY, true));
-
-    Assert.assertEquals(expected, actual);
-  }
-
-  //test I wrote
+  // test I wrote
   @Test
   public void optionalAttendeeAllDayEvent() {
     // The optional attendee is not free the entire day, so ignore their availability
@@ -181,7 +154,7 @@ public final class FindMeetingQueryTest {
     Assert.assertEquals(expected, actual);
   }
 
-  //test I wrote
+  // test I wrote
   @Test
   public void optionalAttendeePartDayEvent() {
     // The optional attendee can make some of the available time slots, so return those time slots
@@ -313,7 +286,7 @@ public final class FindMeetingQueryTest {
     Assert.assertEquals(expected, actual);
   }
 
-  //test I wrote
+  // test I wrote
   @Test
   public void optionalAttendeeJustEnoughRoom() {
     // Available time slot with optional attendee factored in is not sufficient
@@ -389,7 +362,7 @@ public final class FindMeetingQueryTest {
     Assert.assertEquals(expected, actual);
   }
 
-  //test I wrote
+  // test I wrote
   @Test
   public void onlyOptionalAttendees() {
     // No mandatory attendees, just two optional attendees with several gaps in their schedules.
@@ -403,7 +376,7 @@ public final class FindMeetingQueryTest {
             Arrays.asList(PERSON_A)),
         new Event("Event 2", TimeRange.fromStartEnd(TIME_0900AM, TIME_1000AM, false),
             Arrays.asList(PERSON_B)),
-        new Event("Event 3", TimeRange.fromStartEnd(TIME_0500PM, TimeRange.END_OF_DAY, false),
+        new Event("Event 3", TimeRange.fromStartEnd(TIME_0500PM, TimeRange.END_OF_DAY, true),
             Arrays.asList(PERSON_A)));
 
     MeetingRequest request = new MeetingRequest(NO_ATTENDEES, DURATION_60_MINUTES);
@@ -419,7 +392,7 @@ public final class FindMeetingQueryTest {
     Assert.assertEquals(expected, actual);
   }
 
-  //test I wrote
+  // test I wrote
   @Test
   public void onlyOptionalAttendeesNoGaps() {
     // No mandatory attendees, just two optional attendees with no gaps in their schedules. No time should be returned. 
