@@ -38,15 +38,15 @@ public final class FindMeetingQuery {
       }
     }
     // convert events to list representation
-    List<Event> eventsAsList = new ArrayList<Event>();
-    for (Event event: events) {
-      eventsAsList.add(event);
-    }
+    List<Event> eventsAsList = new ArrayList<Event>(events);
+    // for (Event event: events) {
+    //   eventsAsList.add(event);
+    // }
     
     // if there are no mandatory attendees, make optional attendees mandatory attendees
     if (request.getAttendees().isEmpty()) {
       List<String> optionalAttendees = new ArrayList<String>();
-      for(String optionalAttendee: request.getOptionalAttendees()) {
+      for (String optionalAttendee: request.getOptionalAttendees()) {
         optionalAttendees.add(optionalAttendee);
       }
       MeetingRequest requestOptionalAttendees = new MeetingRequest(optionalAttendees, request.getDuration());
@@ -57,7 +57,7 @@ public final class FindMeetingQuery {
     // get time ranges with both required and optional attendees
     
     List<TimeRange> allAttendeesTimeRanges = new ArrayList<TimeRange>();
-    if (!(request.getOptionalAttendees().isEmpty())) {
+    if (!request.getOptionalAttendees().isEmpty()) {
       // create new MeetingRequest object with both optional and required attendees
       // must do this ^ because you can't modify the the current attendees
       List<String> combinedAttendees = new ArrayList<String>();
@@ -82,14 +82,13 @@ public final class FindMeetingQuery {
   
     // if you can schedule in a meeting with optional attendees, select those
     // otherwise, return time ranges with only required attendees
-    if (! (allAttendeesTimeRanges.isEmpty())) {
-      return allAttendeesTimeRanges;
-    } else {
+    if (allAttendeesTimeRanges.isEmpty()) {
       return requiredAttendeesTimeRanges;
     }
+    return allAttendeesTimeRanges;
   }
 
-  public List<TimeRange> getTimeRanges(List<Event> events, MeetingRequest request, boolean areThereRequiredAttendees) {
+  private static List<TimeRange> getTimeRanges(List<Event> events, MeetingRequest request, boolean requiredAttendeesExist) {
     
     Collections.sort(events, Event.ORDER_BY_START);
    
@@ -97,16 +96,15 @@ public final class FindMeetingQuery {
 
     List<TimeRange> availableTimeRanges = getAvailableTimeRanges(unavailableTimeRanges);
 
-    if (areThereRequiredAttendees) {
+    if (requiredAttendeesExist) {
       List<TimeRange> sufficientTimeRanges = getSufficientTimeRanges(availableTimeRanges, request);
       return sufficientTimeRanges;
-    } else {
-      // if no required attendees, return all available time slots
-      return availableTimeRanges;
     }
+    // if no required attendees, return all available time slots
+    return availableTimeRanges;
   }
 
-  public List<Event> filterEvents(List<Event> events, MeetingRequest request) {
+  private static List<Event> filterEvents(List<Event> events, MeetingRequest request) {
     List<Event> filteredEvents = new ArrayList<Event>();
     Collection<String> requiredAttendees = request.getAttendees();
 
@@ -122,7 +120,7 @@ public final class FindMeetingQuery {
   }
 
   // TODO: could make function more complex for multiple overlapping events
-  public List<TimeRange> getUnavailableTimeRanges(List<Event> events) {
+  private static List<TimeRange> getUnavailableTimeRanges(List<Event> events) {
     List<TimeRange> unavailableTimeRanges = new ArrayList<TimeRange>();
     List<TimeRange> eventsAsTimeRanges = new ArrayList<TimeRange>();
 
@@ -137,7 +135,7 @@ public final class FindMeetingQuery {
     }
 
     // time range objects are ordered, so you can compare them by order
-    for (int i = 0; i <= eventsAsTimeRanges.size()-2; i++) {
+    for (int i = 0; i <= eventsAsTimeRanges.size() - 2; i++) {
       TimeRange earlierTimeRange = eventsAsTimeRanges.get(i);
       TimeRange laterTimeRange = eventsAsTimeRanges.get(i + 1);
 
@@ -157,16 +155,16 @@ public final class FindMeetingQuery {
         // CASE 3: non-overlapping events
         if (unavailableTimeRanges.size() >= 1) {
           // make sure that last unavailableTimeRanges object does not overlap
-          if (!(unavailableTimeRanges.get(unavailableTimeRanges.size()-1).contains(laterTimeRange.end()))) {
+          if (!unavailableTimeRanges.get(unavailableTimeRanges.size() - 1).contains(laterTimeRange.end())) {
             unavailableTimeRanges.add(earlierTimeRange);
           }
-        } else{
+        } else {
           unavailableTimeRanges.add(earlierTimeRange);
         }
         // be sure to account for last time range object
-        if (i == eventsAsTimeRanges.size()-2) { 
+        if (i == eventsAsTimeRanges.size() - 2) { 
           // make sure that last unavailableTimeRanges object does not overlap
-          if (!(unavailableTimeRanges.get(unavailableTimeRanges.size()-1).contains(laterTimeRange.end()))) {
+          if (!unavailableTimeRanges.get(unavailableTimeRanges.size() - 1).contains(laterTimeRange.end())) {
             unavailableTimeRanges.add(laterTimeRange);
           }
         }
@@ -175,7 +173,7 @@ public final class FindMeetingQuery {
     return unavailableTimeRanges;
   }
 
-  public List<TimeRange> getAvailableTimeRanges(List<TimeRange> unavailableTimeRanges) {
+  private static List<TimeRange> getAvailableTimeRanges(List<TimeRange> unavailableTimeRanges) {
     List<TimeRange> availableTimeRanges = new ArrayList<TimeRange>();
 
     int earliestStartTime = 0;
@@ -194,7 +192,7 @@ public final class FindMeetingQuery {
       }
       // breaking up the previous "after" section
       if (availableTimeRanges.size() >= 2) {
-        TimeRange lastAvailableTimeRange = availableTimeRanges.get(availableTimeRanges.size()-2);
+        TimeRange lastAvailableTimeRange = availableTimeRanges.get(availableTimeRanges.size() - 2);
         if (lastAvailableTimeRange.contains(unavailableStartTime)) {
           availableTimeRanges.remove(lastAvailableTimeRange); 
         }
@@ -210,7 +208,7 @@ public final class FindMeetingQuery {
     return availableTimeRanges;
   }
 
-  public List<TimeRange> getSufficientTimeRanges(List<TimeRange> availableTimeRanges, MeetingRequest request) {
+  private static List<TimeRange> getSufficientTimeRanges(List<TimeRange> availableTimeRanges, MeetingRequest request) {
     List<TimeRange> sufficientTimeRanges = new ArrayList<TimeRange>();
 
     for (TimeRange timeRange: availableTimeRanges) {
